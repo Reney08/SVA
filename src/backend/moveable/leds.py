@@ -1,18 +1,28 @@
 # led_controller.py
-from dictionaries.led_mapping import led_mapping # Import from the separate file
+from dictionaries.led_mappings import led_mapping # Import from the separate file
+import neopixel
+import board
 
 class LEDController:
-
     steps_to_position = {
-    25: "Pos1",
-    525: "Pos2",
-    1025: "Pos3",
-    # Add more step mappings (as needed)
+        25: "Pos1",
+        525: "Pos2",
+        1025: "Pos3",
+        # Add more step mappings (as needed)
     }
-    def __init__(self):
+    def __init__(self,  pin=board.D18, num_leds=150, brightness=0.5)
+):
         # Use the imported mappings
         self.led_mapping = led_mapping
         # self.steps_to_position = steps_to_position
+
+        self.pixels = neopixel.NeoPixel(
+            pin,
+            num_leds,
+            auto_write=False,
+            brightness=brightness,
+            pixel_order=neopixel.GRB  # Default NeoPixel order
+        )
 
     def get_position_by_steps(self, steps):
         """
@@ -51,9 +61,12 @@ class LEDController:
 if __name__ == "__main__":
     # Initialize the LED controller
     led_controller = LEDController()
+
     # Example: Activate LEDs by position
     led_controller.activate_leds("Pos4")
+
     # Example: Activate LEDs by steps
     led_controller.activate_leds_by_steps(25)
+
     # Example for invalid steps
     led_controller.activate_leds_by_steps(9999)
