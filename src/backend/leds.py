@@ -12,7 +12,7 @@ class LEDController:
     def __init__(self):
         # Use the imported mappings
         self.led_mapping = led_mapping
-        self.steps_to_position = steps_to_position
+        # self.steps_to_position = steps_to_position
 
     def get_position_by_steps(self, steps):
         """
