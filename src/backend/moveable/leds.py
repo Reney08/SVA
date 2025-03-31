@@ -10,8 +10,7 @@ class LEDController:
         1025: "Pos3",
         # Add more step mappings (as needed)
     }
-    def __init__(self,  pin=board.D18, num_leds=150, brightness=0.5)
-):
+    def __init__(self,  pin=board.D18, num_leds=150, brightness=0.5):
         # Use the imported mappings
         self.led_mapping = led_mapping
         # self.steps_to_position = steps_to_position
