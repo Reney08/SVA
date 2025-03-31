@@ -2,6 +2,9 @@ import time
 import neopixel
 import board
 
+from src.backend.moveable.leds import LEDController
+
+
 class TestAddressableRGBLEDs:
     def __init__(self, pin, num_leds=150, brightness=0.5):
         # Initialization (unchanged)
@@ -141,9 +144,14 @@ if __name__ == "__main__":
     TEST_PIN = board.D18  # GPIO 18
     TEST_NUM_LEDS = 150
     TEST_BRIGHTNESS = 0.5
+    POSITION_FILE = "../json/positions.json"
 
     # Initialize Objects for Both Controllers
     test_leds = TestAddressableRGBLEDs(TEST_PIN, TEST_NUM_LEDS, TEST_BRIGHTNESS)
+    led_controller = LEDController(pin=TEST_PIN,
+                                   num_leds=TEST_NUM_LEDS,
+                                   brightness=TEST_BRIGHTNESS,
+                                   position_file=POSITION_FILE)
 
     print("Test program started.")
     print("Choose an option:")
@@ -152,6 +160,7 @@ if __name__ == "__main__":
     print("3. LEDController (from leds.py) - Activate LEDs by steps")
     print("4. LEDController (from leds.py) - Clear LEDs")
     print("5. TestAddressableRGBLEDs - Run Color Loop")
+    print("6. LEDController (from leds.py) - Run Color Loop")
     print("0. Exit")
 
     while True:
@@ -170,6 +179,12 @@ if __name__ == "__main__":
                     (255, 0, 0))
             elif choice == 5:
                 test_leds.run_color_loop()
+            elif choice == 6:
+                # Display all available positions
+                print("Available Positions:")
+                for pos, details in led_controller.positions.items():
+                    print(f"{pos}: Steps = {details['steps']}, Liquid = {details['liquid']}, Use = {details['use']}")
+
             elif choice == 0:
                 print("Exiting program.")
                 test_leds.clear()
