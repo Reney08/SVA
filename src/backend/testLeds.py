@@ -167,19 +167,24 @@ if __name__ == "__main__":
         try:
             choice = int(input("Please choose an option: "))
             if choice == 1:
+                test_leds.clear()
                 test_leds.display_rainbow(direction="left_to_right")
             elif choice == 2:
                 test_leds.clear()
             elif choice == 3:
+                test_leds.clear()
                 test_leds.set_specific_leds((input("Enter LED index: ")), (255, 0, 0))
             elif choice == 4:
+                test_leds.clear()
                 test_leds.set_led_range(
                     int(input("Enter starting LED index: ")),
                     int(input("Enter ending LED index: ")),
                     (255, 0, 0))
             elif choice == 5:
+                test_leds.clear()
                 test_leds.run_color_loop()
             elif choice == 6:
+                test_leds.clear()
                 # Activate LEDs for a specific position
                 position = input("Enter position (e.g., Pos1, Pos2): ")
                 led_controller.activate_leds_by_position(position)
