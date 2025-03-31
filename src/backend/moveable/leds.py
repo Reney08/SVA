@@ -1,5 +1,5 @@
 # led_controller.py
-from dictionaries.led_mappings import led_mapping # Import from the separate file
+from ..dictionaries.led_mappings import led_mapping # Import from the separate file
 import neopixel
 import board
 
