@@ -184,7 +184,7 @@ if __name__ == "__main__":
                 test_leds.clear()
                 test_leds.run_color_loop()
             elif choice == 6:
-                test_leds.clear()
+                led_controller.deactivate_all_leds()
                 # Display all available positions
                 print("Available Positions:")
                 for pos,details in led_controller.positions.items():
