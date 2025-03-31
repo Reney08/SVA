@@ -1,7 +1,6 @@
+from led_mapping import led_mapping
+
 # led_controller.py
-from dictionaries.led_mapping import led_mapping, steps_to_position  # Import from the separate file
-
-
 class LEDController:
     def __init__(self):
         # Use the imported mappings
