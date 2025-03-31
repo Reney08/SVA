@@ -11,6 +11,8 @@ class TestAddressableRGBLEDs:
         self.num_leds_per_row = num_leds // 2
         self.brightness = brightness
 
+        self.led_mapping = leds_controller.led_mapping
+
         # NeoPixel-Objekt initialization
         self.pixels = neopixel.NeoPixel(
             pin,
