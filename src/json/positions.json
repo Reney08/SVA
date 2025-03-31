@@ -1,0 +1,52 @@
+{
+  "nullPos":{
+  "liquid": "None",
+  "steps": 0,
+  "use": "None"
+},
+  "maxPos": {
+    "liquid": "None",
+    "steps": 5107,
+    "use": "None"
+  },
+  "standardPos": {
+    "liquid": "None",
+    "steps": 5000,
+    "use": "None"
+  },
+  "Pos1": {
+    "liquid": "Vodka",
+    "steps": 25,
+    "use": "servo"
+  },
+  "Pos2": {
+    "liquid": "Tequila",
+    "steps": 525,
+    "use": "servo"
+  },
+  "Pos3": {
+    "liquid": "Bacardi",
+    "steps": 1025,
+    "use": "servo"
+  },
+  "Pos4": {
+    "liquid": "Rum",
+    "steps": 1525,
+    "use": "servo"
+  },
+  "Pos5": {
+    "liquid": "Korn",
+    "steps": 2025,
+    "use": "servo"
+  },
+  "Pos6": {
+    "liquid": "Gin",
+    "steps": 2525,
+    "use": "servo"
+  },
+  "Pumps": {
+    "liquid": "True",
+    "steps": 3025,
+    "use": "pump"
+  }
+}
