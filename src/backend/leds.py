@@ -1,4 +1,4 @@
-from led_mapping import led_mapping
+from dictionaries.led_mapping import led_mapping
 
 # led_controller.py
 class LEDController:
