@@ -185,6 +185,11 @@ if __name__ == "__main__":
                 test_leds.run_color_loop()
             elif choice == 6:
                 test_leds.clear()
+                # Display all available positions
+                print("Available Positions:")
+                for pos,details in led_controller.positions.items():
+                    print(f"{pos}: Steps = {details['steps']}")
+
                 # Activate LEDs for a specific position
                 position = input("Enter position (e.g., Pos1, Pos2): ")
                 led_controller.activate_leds_by_position(position)
