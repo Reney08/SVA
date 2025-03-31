@@ -1,17 +1,19 @@
-from dictionaries.led_mapping import led_mapping
-
 # led_controller.py
+from dictionaries.led_mappings import led_mapping # Import from the separate file
+
+
 class LEDController:
     def __init__(self):
         # Use the imported mappings
         self.led_mapping = led_mapping
-        self.steps_to_position = steps_to_position
+        # self.steps_to_position = steps_to_position
 
     def get_position_by_steps(self, steps):
         """
         Get the position name by step value.
         """
-        return self.steps_to_position.get(steps, None)
+        return steps
+
 
     def activate_leds(self, position):
         """
@@ -27,6 +29,7 @@ class LEDController:
             print(f"Activating bottom-row LEDs: {bottom_row_leds}")
         else:
             print(f"No LEDs mapped for position: {position}")
+
 
     def activate_leds_by_steps(self, steps):
         """
