@@ -1,7 +1,7 @@
 import json
 import neopixel
 import board
-from dictionaries.led_mapping import led_mapping
+from ..dictionarys.led_mapping import led_mapping
 
 
 class LEDController:
@@ -89,3 +89,28 @@ class LEDController:
         self.pixels.fill((0, 0, 0))
         self.pixels.show()
         print("All LEDs turned off.")
+
+    def activate_leds_by_position(self, position):
+        """
+        Activate LEDs corresponding to a specific position (e.g., "Pos1").
+        Uses `positions.json` for validation and `led_mapping` for LED indices.
+
+        :param position: The position to activate (e.g., "Pos1", "Pos2").
+        """
+        if position in self.positions:
+            # Check if position exists in led_mapping
+            if position in self.led_mapping:
+                top_row = self.led_mapping[position]["top-row"]
+                bottom_row = self.led_mapping[position]["bottom-row"]
+
+                # Set LEDs for both rows to a default color (e.g., blue)
+                default_color = (0, 0, 255)  # Default to blue unless changed
+                for led in top_row + bottom_row:
+                    self.pixels[led] = default_color
+
+                self.pixels.show()
+                print(f"Activated LEDs for {position} (Liquid: {self.positions[position]['liquid']}).")
+            else:
+                print(f"No LED mapping defined for position: {position}.")
+        else:
+            print(f"Invalid position: {position}. Please choose a valid position.")
