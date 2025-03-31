@@ -20,43 +20,6 @@ class TestAddressableRGBLEDs:
             pixel_order=neopixel.GRB
         )
 
-    def get_position_by_steps(self, steps):
-        """
-        Get a position's LED range based on the step value.
-        """
-        # Basic example: Map steps to LED segments
-        if steps < 100:  # Example condition
-            return "Pos1"  # Can add functionality for "step-to-LED" mapping
-        elif steps < 200:
-            return "Pos2"
-        elif steps < 300:
-            return "Pos3"
-        else:
-            return "No Position"
-
-    def light_up_based_on_steps(self, steps, color=(255, 0, 0)):
-        """
-        Light up specific LEDs based on 'steps'.
-        """
-        position = self.get_position_by_steps(steps)
-
-        # Map position (e.g., "Pos1") to specific LEDs to light
-        if position == "Pos1":
-            start, end = 0, 10  # Example range of LEDs for Pos1
-        elif position == "Pos2":
-            start, end = 10, 20  # Range for Pos2
-        elif position == "Pos3":
-            start, end = 20, 30  # Range for Pos3
-        else:
-            print(f"No LEDs to light for steps: {steps}")
-            return
-
-        # Light up LEDs in the range with the given color
-        print(f"Lighting up LEDs {start}-{end - 1} for {position} based on steps: {steps}")
-        for i in range(start, end):
-            self.pixels[i] = color
-        self.pixels.show()
-
     def clear(self):
         """
         Turn off all LEDs.
@@ -123,6 +86,22 @@ class TestAddressableRGBLEDs:
             pos -= 170
             return 0, int(pos * 3), int(255 - (pos * 3))
 
+    def set_color(self, r, g, b):
+        """
+        Setzt alle LEDs auf eine bestimmte Farbe.
+
+        :param r: Rot-Wert (0-255)
+        :param g: GrÃ¼n-Wert (0-255)
+        :param b: Blau-Wert (0-255)
+        """
+        # Konvertiere Werte auf die Helligkeitsskala, falls nÃ¶tig
+        scaled_color = (int(r * self.brightness), int(g * self.brightness), int(b * self.brightness))
+
+        # Wende die Farbe auf alle LEDs an
+        for i in range(self.num_leds):
+            self.pixels[i] = scaled_color  # Setze alle LEDs auf dieselbe Farbe
+
+
 
 if __name__ == "__main__":
     # Configure GPIO Pin and LED parameters
@@ -140,6 +119,7 @@ if __name__ == "__main__":
     print("2. TestAddressableRGBLEDs - Clear LEDs")
     print("3. LEDController (from leds.py) - Activate LEDs by steps")
     print("4. LEDController (from leds.py) - Clear LEDs")
+    print("5. TestAddressableRGBLEDs - Run Color Loop")
     print("0. Exit")
 
     while True:
@@ -150,18 +130,21 @@ if __name__ == "__main__":
             elif choice == 2:
                 test_leds.clear()
             elif choice == 3:
-                # Ask for steps and activate LEDs using LEDController
+                # Option 3: Activate LEDs by step value
                 try:
                     steps = int(input("Enter step value: "))
                     leds_controller.activate_leds_by_steps(steps)
                 except ValueError:
-                    print("Invalid step value. Please enter a number.")
+                    print("Invalid input. Please enter a valid number.")
+
             elif choice == 4:
-                # Clear LEDs using the LEDController
+                # Option 2: Activate LEDs by position
                 try:
-                    test_leds.clear()
-                except AttributeError:
-                    print("The `clear` method is not defined in the `LEDController`. Please implement it.")
+                    position = input("Enter position (e.g., Pos1, Pos2): ")
+                    leds_controller.activate_leds(position)
+                except ValueError:
+                    print("Invalid input. Please enter a valid position.")
+
             elif choice == 5:
                 test_leds.run_color_loop()
             elif choice == 6:
