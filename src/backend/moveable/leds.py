@@ -1,7 +1,7 @@
 import json
 import neopixel
 import board
-from ..dictionarys.led_mapping import led_mapping
+from dictionaries.led_mapping import led_mapping
 
 
 class LEDController:
