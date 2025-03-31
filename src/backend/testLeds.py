@@ -84,6 +84,32 @@ class TestAddressableRGBLEDs:
             print("\nRainbow animation stopped.")
             self.clear()
 
+
+    def run_color_loop(self):
+        """
+        LÃ¤sst den Benutzer eine Farbe auswÃ¤hlen und wendet sie dynamisch auf die LEDs an.
+        Die Schleife lÃ¤uft, bis der Benutzer `Ctrl + C` drÃ¼ckt.
+        """
+        print("DrÃ¼cke Strg+C, um das Programm zu beenden.")
+        print("Gib die neue Farbe als RGB-Werte (z. B. '255 0 0' fÃ¼r Rot) ein.")
+
+        try:
+            while True:
+                user_input = input("Neue Farbe (RGB-Werte): ")
+                try:
+                    r, g, b = map(int, user_input.split())
+                    if 0 <= r <= 255 and 0 <= g <= 255 and 0 <= b <= 255:
+                        self.set_color(r, g, b)
+                        self.pixels.show()
+                        print(f"Neue Farbe auf R:{r}, G:{g}, B:{b} gesetzt.")
+                    else:
+                        print("RGB-Werte mÃ¼ssen zwischen 0 und 255 liegen.")
+                except ValueError:
+                    print("UngÃ¼ltige Eingabe. Bitte gib drei Zahlen ein, getrennt durch Leerzeichen.")
+        except KeyboardInterrupt:
+            print("\nProgramm beendet. LEDs werden ausgeschaltet.")
+            self.clear()
+
     def _color_wheel(self, pos):
         """
         Generate a color from a rainbow wheel.
@@ -136,6 +162,24 @@ if __name__ == "__main__":
                     test_leds.clear()
                 except AttributeError:
                     print("The `clear` method is not defined in the `LEDController`. Please implement it.")
+            elif choice == 5:
+                test_leds.run_color_loop()
+            elif choice == 6:
+                # Activate LEDs based on step-to-position mapping (new feature)
+                try:
+                    steps = int(input("Enter step value to determine position: "))
+                    position = leds_controller.get_position_by_steps(steps)
+
+                    if position:
+                        print(f"Position mapped to steps {steps}: {position}")
+                        # Activate LEDs for the determined position
+                        leds_controller.activate_leds(position)
+                    else:
+                        print(f"No position found for steps {steps}.")
+
+                except ValueError:
+                    print("Invalid input. Please enter a valid number for steps.")
+
             elif choice == 0:
                 print("Exiting program.")
                 test_leds.clear()
