@@ -1,5 +1,5 @@
 # led_controller.py
-from .led_mappings import led_mapping, steps_to_position  # Import from the separate file
+from .led_mapping import led_mapping, steps_to_position  # Import from the separate file
 
 
 class LEDController:
