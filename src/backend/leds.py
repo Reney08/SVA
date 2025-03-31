@@ -18,7 +18,7 @@ class LEDController:
         """
         Get the position name by step value.
         """
-        return self.steps_to_position(steps)
+        return self.steps_to_position.get(steps)
 
 
     def activate_leds(self, position):
