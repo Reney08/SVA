@@ -142,6 +142,8 @@ if __name__ == "__main__":
                 try:
                     position = input("Enter position (e.g., Pos1, Pos2): ")
                     leds_controller.activate_leds(position)
+                    leds_controller.pixels.show()
+
                 except ValueError:
                     print("Invalid input. Please enter a valid position.")
 
