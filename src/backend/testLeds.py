@@ -2,7 +2,7 @@ import time
 import neopixel
 import board
 
-from src.backend.moveable.leds import LEDController
+from .moveable.leds import LEDController
 
 
 class TestAddressableRGBLEDs:
