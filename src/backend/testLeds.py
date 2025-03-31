@@ -2,8 +2,6 @@ import time
 import neopixel
 import board
 
-from moveable.leds import LEDController
-
 class TestAddressableRGBLEDs:
     def __init__(self, pin, num_leds=150, brightness=0.5):
         # Initialization (unchanged)
@@ -101,6 +99,41 @@ class TestAddressableRGBLEDs:
         for i in range(self.num_leds):
             self.pixels[i] = scaled_color  # Setze alle LEDs auf dieselbe Farbe
 
+    def set_specific_leds(self, leds, color):
+        """
+        Set specific LEDs to a given color.
+
+        :param leds: A list of LED indices or a single index (int) to set.
+        :param color: A tuple representing the RGB color (R, G, B).
+        """
+        if isinstance(leds, int):  # If a single LED index is passed
+            leds = [leds]
+
+        try:
+            for led in leds:
+                if 0 <= led < len(self.pixels):  # Check if the LED index is valid
+                    self.pixels[led] = color
+                else:
+                    print(f"Warning: LED index {led} is out of range.")
+            self.pixels.show()  # Update the LED strip
+            print(f"Set LEDs {leds} to color {color}.")
+        except Exception as e:
+            print(f"Error while setting specific LEDs: {e}")
+
+    def set_led_range(self, start, end, color):
+        """
+           Set a range of LEDs to a given color.
+           :param start: Starting index of the range (inclusive).
+           :param end: Ending index of the range (inclusive).
+           :param color: A tuple representing the RGB color (R, G, B).
+           """
+        for led in range(start, end + 1):  # Include the end index
+            if 0 <= led < len(self.pixels):  # Check if index is valid
+                self.pixels[led] = color
+            else:
+                print(f"Warning: LED index {led} is out of range.")
+        self.pixels.show()  # Update the strip
+        print(f"Set LEDs from index {start} to {end} to color {color}.")
 
 
 if __name__ == "__main__":
@@ -111,7 +144,6 @@ if __name__ == "__main__":
 
     # Initialize Objects for Both Controllers
     test_leds = TestAddressableRGBLEDs(TEST_PIN, TEST_NUM_LEDS, TEST_BRIGHTNESS)
-    leds_controller = LEDController(pin=board.D18, num_leds=150, brightness=0.5)  # Assuming it uses its own default settings
 
     print("Test program started.")
     print("Choose an option:")
@@ -130,40 +162,14 @@ if __name__ == "__main__":
             elif choice == 2:
                 test_leds.clear()
             elif choice == 3:
-                # Option 3: Activate LEDs by step value
-                try:
-                    steps = int(input("Enter step value: "))
-                    leds_controller.activate_leds_by_steps(steps)
-                except ValueError:
-                    print("Invalid input. Please enter a valid number.")
-
+                test_leds.set_specific_leds((input("Enter LED index: ")), (255, 0, 0))
             elif choice == 4:
-                # Option 2: Activate LEDs by position
-                try:
-                    position = input("Enter position (e.g., Pos1, Pos2): ")
-                    leds_controller.activate_leds(position)
-                    leds_controller.pixels.show()
-
-                except ValueError:
-                    print("Invalid input. Please enter a valid position.")
-
+                test_leds.set_led_range(
+                    int(input("Enter starting LED index: ")),
+                    int(input("Enter ending LED index: ")),
+                    (255, 0, 0))
             elif choice == 5:
                 test_leds.run_color_loop()
-            elif choice == 6:
-                # Activate LEDs based on step-to-position mapping (new feature)
-                try:
-                    steps = int(input("Enter step value to determine position: "))
-                    position = leds_controller.get_position_by_steps(steps)
-                    if position:
-                        print(f"Position mapped to steps {steps}: {position}")
-                        # Activate LEDs for the determined position
-                        leds_controller.activate_leds(position)
-                    else:
-                        print(f"No position found for steps {steps}.")
-
-                except ValueError:
-                    print("Invalid input. Please enter a valid number for steps.")
-
             elif choice == 0:
                 print("Exiting program.")
                 test_leds.clear()
