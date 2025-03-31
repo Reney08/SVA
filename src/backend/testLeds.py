@@ -2,7 +2,7 @@ import time
 import neopixel
 import board
 
-from moveable.leds import LEDController
+from .moveable.leds import LEDController
 
 
 class TestAddressableRGBLEDs:
@@ -180,11 +180,9 @@ if __name__ == "__main__":
             elif choice == 5:
                 test_leds.run_color_loop()
             elif choice == 6:
-                # Display all available positions
-                print("Available Positions:")
-                for pos, details in led_controller.positions.items():
-                    print(f"{pos}: Steps = {details['steps']}, Liquid = {details['liquid']}, Use = {details['use']}")
-
+                # Activate LEDs for a specific position
+                position = input("Enter position (e.g., Pos1, Pos2): ")
+                led_controller.activate_leds_by_position(position)
             elif choice == 0:
                 print("Exiting program.")
                 test_leds.clear()
