@@ -5,13 +5,11 @@ import board
 from moveable.leds import LEDController
 
 class TestAddressableRGBLEDs:
-    def __init__(self, pin, num_leds=30, brightness=0.5):
+    def __init__(self, pin, num_leds=150, brightness=0.5):
         # Initialization (unchanged)
         self.num_leds = num_leds
         self.num_leds_per_row = num_leds // 2
         self.brightness = brightness
-
-        self.led_mapping = leds_controller.led_mapping
 
         # NeoPixel-Objekt initialization
         self.pixels = neopixel.NeoPixel(
@@ -134,7 +132,7 @@ if __name__ == "__main__":
 
     # Initialize Objects for Both Controllers
     test_leds = TestAddressableRGBLEDs(TEST_PIN, TEST_NUM_LEDS, TEST_BRIGHTNESS)
-    leds_controller = LEDController()  # Assuming it uses its own default settings
+    leds_controller = LEDController(pin=board.D18, num_leds=150, brightness=0.5)  # Assuming it uses its own default settings
 
     print("Test program started.")
     print("Choose an option:")
@@ -171,7 +169,6 @@ if __name__ == "__main__":
                 try:
                     steps = int(input("Enter step value to determine position: "))
                     position = leds_controller.get_position_by_steps(steps)
-
                     if position:
                         print(f"Position mapped to steps {steps}: {position}")
                         # Activate LEDs for the determined position
