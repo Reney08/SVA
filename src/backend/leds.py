@@ -52,7 +52,7 @@ if __name__ == "__main__":
     # Initialize the LED controller
     led_controller = LEDController()
     # Example: Activate LEDs by position
-    led_controller.activate_leds("Pos1")
+    led_controller.activate_leds("Pos4")
     # Example: Activate LEDs by steps
     led_controller.activate_leds_by_steps(25)
     # Example for invalid steps
