@@ -1,71 +1,91 @@
-# led_controller.py
-from dictionaries.led_mapping import led_mapping
+import json
 import neopixel
 import board
+from ..dictionarys.led_mapping import led_mapping
+
 
 class LEDController:
-    steps_to_position = {
-        25: "Pos1",
-        525: "Pos2",
-        1025: "Pos3",
-        # Add more step mappings (as needed)
-    }
-    def __init__(self,  pin=board.D18, num_leds=150, brightness=0.5):
-        # Use the imported mappings
-        self.led_mapping = led_mapping
-        # self.steps_to_position = steps_to_position
+    def __init__(self, pin=board.D18, num_leds=150, brightness=0.5, position_file="../json/positions.json"):
+        """
+        Initialize the LED controller using NeoPixel and load position/step mappings.
 
+        :param pin: GPIO pin controlling the LED strip (default: GPIO18).
+        :param num_leds: Total number of LEDs in the strip.
+        :param brightness: Brightness value for the LEDs (0.0 to 1.0).
+        :param position_file: JSON file containing position definitions.
+        """
         self.pixels = neopixel.NeoPixel(
             pin,
             num_leds,
             auto_write=False,
             brightness=brightness,
-            pixel_order=neopixel.GRB  # Default NeoPixel order
+            pixel_order=neopixel.GRB  # Modify if necessary for different strips
         )
+        self.led_mapping = led_mapping  # LED-to-position mapping from `led_mapping.py`
+        self.positions = self.load_positions(position_file)  # Load step mappings from JSON
+
+    def load_positions(self, position_file):
+        """
+        Load positions (steps, liquid names, etc.) from a JSON file.
+        :param position_file: The path to the JSON file.
+        :return: A dictionary with position data.
+        """
+        try:
+            with open(position_file, "r") as file:
+                return json.load(file)
+        except FileNotFoundError:
+            print(f"Position file '{position_file}' not found. Using empty mapping.")
+            return {}
+        except json.JSONDecodeError:
+            print(f"Error decoding JSON from '{position_file}'. Using empty mapping.")
+            return {}
 
     def get_position_by_steps(self, steps):
         """
-        Get the position name by step value.
+        Get the position name that corresponds to the given step value.
+        :param steps: The step value to map.
+        :return: A position name (e.g., "Pos1").
         """
-        return self.steps_to_position.get(steps)
+        for position, details in self.positions.items():
+            if details.get("steps") == steps:
+                return position
+        return None  # No matching position found
 
-
-    def activate_leds(self, position):
+    def activate_leds_for_position(self, position, color):
         """
-        Activate the LEDs for a given position.
+        Activate LEDs corresponding to a specific position (e.g., "Pos1").
+        :param position: The position to activate (e.g., "Pos1", "Pos2").
+        :param color: A tuple representing the RGB color (R, G, B).
         """
         if position in self.led_mapping:
-            # Retrieve the LEDs to activate
-            top_row_leds = self.led_mapping[position]["top-row"]
-            bottom_row_leds = self.led_mapping[position]["bottom-row"]
+            # Get the list of top-row and bottom-row LEDs for the position
+            top_row = self.led_mapping[position]["top-row"]
+            bottom_row = self.led_mapping[position]["bottom-row"]
 
-            # Print or trigger hardware logic (replace with GPIO commands, etc.)
-            print(f"Activating top-row LEDs: {top_row_leds}")
-            print(f"Activating bottom-row LEDs: {bottom_row_leds}")
+            # Activate LEDs for this position
+            for led in top_row + bottom_row:
+                self.pixels[led] = color
+            self.pixels.show()
+            print(f"Activated LEDs for {position} with color {color}.")
         else:
-            print(f"No LEDs mapped for position: {position}")
+            print(f"No LEDs defined for position: {position}.")
 
-
-    def activate_leds_by_steps(self, steps):
+    def activate_leds_by_step(self, steps, color):
         """
-        Activate LEDs based on the current step value by determining the position.
+        Activate LEDs based on step value by first determining the position.
+        :param steps: The step value.
+        :param color: A tuple representing the RGB color (R, G, B).
         """
         position = self.get_position_by_steps(steps)
         if position:
-            self.activate_leds(position)
+            self.activate_leds_for_position(position, color)
         else:
-            print(f"No LEDs mapped for steps: {steps}")
+            print(f"No position found for steps: {steps}.")
 
-
-if __name__ == "__main__":
-    # Initialize the LED controller
-    led_controller = LEDController()
-
-    # Example: Activate LEDs by position
-    led_controller.activate_leds("Pos4")
-
-    # Example: Activate LEDs by steps
-    led_controller.activate_leds_by_steps(25)
-
-    # Example for invalid steps
-    led_controller.activate_leds_by_steps(9999)
+    def deactivate_all_leds(self):
+        """
+        Turn off all LEDs (set them to black).
+        """
+        self.pixels.fill((0, 0, 0))
+        self.pixels.show()
+        print("All LEDs turned off.")
