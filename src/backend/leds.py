@@ -1,8 +1,14 @@
 # led_controller.py
 from dictionaries.led_mapping import led_mapping # Import from the separate file
 
-
 class LEDController:
+
+    steps_to_position = {
+    25: "Pos1",
+    525: "Pos2",
+    1025: "Pos3",
+    # Add more step mappings (as needed)
+    }
     def __init__(self):
         # Use the imported mappings
         self.led_mapping = led_mapping
@@ -45,12 +51,9 @@ class LEDController:
 if __name__ == "__main__":
     # Initialize the LED controller
     led_controller = LEDController()
-
     # Example: Activate LEDs by position
     led_controller.activate_leds("Pos1")
-
     # Example: Activate LEDs by steps
     led_controller.activate_leds_by_steps(25)
-
     # Example for invalid steps
     led_controller.activate_leds_by_steps(9999)
