@@ -90,7 +90,7 @@ class LEDController:
         self.pixels.show()
         print("All LEDs turned off.")
 
-    def activate_leds_by_position(self, position):
+    def activate_leds_by_position(self, position, color):
         """
         Activate LEDs corresponding to a specific position (e.g., "Pos1").
         Uses `positions.json` for validation and `led_mapping` for LED indices.
@@ -105,8 +105,9 @@ class LEDController:
 
                 # Set LEDs for both rows to a default color (e.g., blue)
                 default_color = (0, 0, 255)  # Default to blue unless changed
+                # color = default_color
                 for led in top_row + bottom_row:
-                    self.pixels[led] = default_color
+                    self.pixels[led] = color
 
                 self.pixels.show()
                 print(f"Activated LEDs for {position} (Liquid: {self.positions[position]['liquid']}).")
