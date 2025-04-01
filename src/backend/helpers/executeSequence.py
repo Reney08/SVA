@@ -1,23 +1,26 @@
-from moveable import leds
-'''
-from .moveable import pump
-from .moveable import scale
-from .moveable import servo
-from .moveable import stepper
+# from src.backend.moveable.leds import LEDController
 
-'''
+# from .moveable import pump
+# from .moveable import scale
+# from .moveable import servo
+# from .moveable import stepper
+
+
 # import sequenceHelper
 import json
 import time
+
+# from src.backend.moveable import pump
+
 
 class ExecuteSequence:
 
     def __init__(self, sequence):
         self.exec_sequence = sequence
         self.positions = self.load_position()
-        self.led_controller = leds.LEDController()
         self.pumps = self.load_pumps()
-
+        print(sequence)
+        # self.led_controller = LEDController()
 
     def execute_sequence(self, exec_sequence):
         for step in exec_sequence:
@@ -26,7 +29,6 @@ class ExecuteSequence:
                 pump_position = self.get_pump_position(self.positions)
                 if pump_position is not None:
                     print(f"activate LEDs red for pump position: {pump_position['steps']}")
-                    self.led_controller.activate_leds_by_step(pump_position, (255, 0, 0))
                     print(f"Stepper moving to pump position: {pump_position['steps']}")
 
                     # Get the PWM channel for the liquid from pumps.json
@@ -38,17 +40,15 @@ class ExecuteSequence:
                         print(f"No pump found storing the liquid: {liquid}")
                 else:
                     print("No valid pump position found!")
-                # print("moving Stepper to pump position")
-                # print(f"Pump Position: {pump_position}")
-            elif step['type'] == 'servo':
-                
-                liquid_position = self.get_position_for_liquid(self.positions, step['details']['liquid'])
-                self.led_controller.activate_leds_by_step(liquid_position, (0, 255, 0))
-                # print("moving Stepper to servo position")
-                # print(f"Liquid '{step['details']['liquid']}' is stored at position {liquid_position}")
-            time.sleep(10)
-            self.led_controller.deactivate_all_leds()
 
+            elif step['type'] == 'servo':
+                liquid_position = self.get_position_for_liquid(self.positions, step['details']['liquid'])
+                # self.led_controller.activate_leds_by_step(liquid_position, (0, 255, 0))
+                print("activate LEDs blue")
+                print("moving Stepper to servo position")
+                print(f"Liquid '{step['details']['liquid']}' is stored at position {liquid_position}")
+            time.sleep(10)
+        # self.led_controller.deactivate_all_leds()
 
     def load_position(self):
         """
@@ -117,4 +117,6 @@ class ExecuteSequence:
             if data.get("liquid") == liquid:
                 return data.get("pwm_channel", None)
         return None  # Return None if no match is found
+
+
 
