@@ -2,7 +2,7 @@ from moveable.leds import LEDController
 # from moveable import pump
 # from moveable import scale
 # from moveable import servo
-from moveable import Stepper
+from moveable.stepper import Stepper
 
 
 # import sequenceHelper
