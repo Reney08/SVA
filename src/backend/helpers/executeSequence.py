@@ -37,20 +37,20 @@ class ExecuteSequence:
                     pwm_channel = self.get_pump_pwm_channel(self.pumps, liquid)
                     if pwm_channel is not None:
                         match pwm_channel:
-                        case 0:
-                            self.led_controller.activate_leds_by_steps(self.get_pump_position(self.positions), (255, 0, 0))
-                        case 1:
-                            self.led_controller.activate_leds_by_steps(self.get_pump_position(self.positions), (0, 255, 0))
-                        case 2:
-                            self.led_controller.activate_leds_by_steps(self.get_pump_position(self.positions), (0, 0, 255))
-                        case 3:
-                            self.led_controller.activate_leds_by_steps(self.get_pump_position(self.positions), (255, 255, 0))
-                        case 4:
-                            self.led_controller.activate_leds_by_steps(self.get_pump_position(self.positions), (255, 0, 255))
-                        case 5:
-                            self.led_controller.activate_leds_by_steps(self.get_pump_position(self.positions), (0, 255, 255))
-                        case 6:
-                            self.led_controller.activate_leds_by_steps(self.get_pump_position(self.positions), (255, 255, 255))
+                            case 0:
+                                self.led_controller.activate_leds_by_steps(self.get_pump_position(self.positions), (255, 0, 0))
+                            case 1:
+                                self.led_controller.activate_leds_by_steps(self.get_pump_position(self.positions), (0, 255, 0))
+                            case 2:
+                                self.led_controller.activate_leds_by_steps(self.get_pump_position(self.positions), (0, 0, 255))
+                            case 3:
+                                self.led_controller.activate_leds_by_steps(self.get_pump_position(self.positions), (255, 255, 0))
+                            case 4:
+                                self.led_controller.activate_leds_by_steps(self.get_pump_position(self.positions), (255, 0, 255))
+                            case 5:
+                                self.led_controller.activate_leds_by_steps(self.get_pump_position(self.positions), (0, 255, 255))
+                            case 6:
+                                self.led_controller.activate_leds_by_steps(self.get_pump_position(self.positions), (255, 255, 255))
                         print(f"The liquid '{liquid}' is dispensed from pump with PWM channel: {pwm_channel}")
                     else:
                         print(f"No pump found storing the liquid: {liquid}")
