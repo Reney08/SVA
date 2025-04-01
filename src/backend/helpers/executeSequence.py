@@ -29,7 +29,7 @@ class ExecuteSequence:
                 pump_position = self.get_pump_position(self.positions)
                 if pump_position is not None:
                     # print(f"activate LEDs red for pump position: {pump_position['steps']}")
-                    self.led_controller.activate_leds_by_step("Pumps", (0, 255, 0))
+                    self.led_controller.activate_leds_by_step(self.get_pump_position(self.positions), (0, 255, 0))
                     # print(f"Stepper moving to pump position: {pump_position['steps']}")
 
                     # Get the PWM channel for the liquid from pumps.json
