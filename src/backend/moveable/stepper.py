@@ -23,7 +23,7 @@ class Stepper:
             self.initialized = True
             print("stepper initialized")
 
-        self.load_from_dict(json.load(open("./json/settings.json")))
+        self.load_from_dict(json.load(open("../json/settings.json")))
         self.gpio_init()
 
     @classmethod
