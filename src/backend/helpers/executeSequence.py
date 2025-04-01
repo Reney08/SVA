@@ -55,7 +55,7 @@ class ExecuteSequence:
             elif step['type'] == 'servo':
                 liquid_position = self.get_position_for_liquid(self.positions, step['details']['liquid'])
                 
-                self.led_controller.activate_leds_by_steps(liquid_position, (0, 255, 0))
+                self.led_controller.activate_leds_by_step(liquid_position, (0, 255, 0))
                 self.stepper.move_to_position(liquid_position)
                 
                 print("activate LEDs blue")
@@ -118,46 +118,46 @@ class ExecuteSequence:
     def decide_pump(self, channel):
         match channel:
             case 0:
-                '''
+                
                 self.led_controller.activate_leds_by_step(self.get_pump_position(self.positions),
                                                            (255, 0, 0))
-                '''
+                
                 print("activate LEDs red")
             case 1:
-                '''
+                
                 self.led_controller.activate_leds_by_step(self.get_pump_position(self.positions),
                                                            (0, 255, 0))
-                '''
+                
                 print("activate LEDs green")
             case 2:
-                '''
+                
                 self.led_controller.activate_leds_by_step(self.get_pump_position(self.positions),
                                                            (0, 0, 255))
-                '''
+                
                 print("activate LEDs blue")
             case 3:
-                '''
+                
                 self.led_controller.activate_leds_by_step(self.get_pump_position(self.positions),
                                                            (255, 255, 0))
-                '''
+                
                 print("activate LEDs yellow")
             case 4:
-                '''
+                
                 self.led_controller.activate_leds_by_step(self.get_pump_position(self.positions),
                                                            (255, 0, 255))
-                '''
+                
                 print("activate LEDs magenta")
             case 5:
-                '''
+                
                 self.led_controller.activate_leds_by_step(self.get_pump_position(self.positions),
                                                            (0, 255, 255))
-                '''
+                
                 print("activate LEDs cyan")
             case 6:
-                '''
+                
                 self.led_controller.activate_leds_by_step(self.get_pump_position(self.positions),
                                                            (255, 255, 255))
-                '''
+                
                 print("activate LEDs white")
 
     def get_pump_pwm_channel(self, pumps, liquid):
