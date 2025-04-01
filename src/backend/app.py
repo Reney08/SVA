@@ -8,8 +8,8 @@ import glob
 import os
 
 app = Flask(__name__,
-            template_folder='./frontend/templates',
-            static_folder='./frontend/static')
+            template_folder='/frontend/templates',
+            static_folder='/frontend/static')
 app.secret_key = "test123"
 
 with open("../json/pumps.json", "r") as file:
