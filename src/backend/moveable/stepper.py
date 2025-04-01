@@ -23,7 +23,7 @@ class Stepper:
             self.initialized = True
             print("stepper initialized")
 
-        self.load_from_dict(json.load(open("../json/settings.json")))
+        self.load_from_dict(json.load(open("./json/settings.json")))
         self.gpio_init()
 
     @classmethod
@@ -48,59 +48,16 @@ class Stepper:
         GPIO.setup(self.schalterRechtsPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.output(self.EN, GPIO.LOW)
 
-    def move_step(self, direction):
-        """Move the motor one step in the specified direction (GPIO.HIGH or GPIO.LOW)."""
-        GPIO.output(self.DIR, direction)
-        GPIO.output(self.STEP, GPIO.HIGH)
-        time.sleep(self.US * self.US_DELAY)  # Pulse HIGH
-        GPIO.output(self.STEP, GPIO.LOW)
-        time.sleep(self.US * self.US_DELAY)  # Pulse LOW
-        # Update current position
-        if direction == GPIO.HIGH:
-            self.aktuelle_position += 1
-        else:
-            self.aktuelle_position -= 1
-
-    def move_rel_pos(self, relative_steps):
-        """Move motor by a relative number of steps (+ve for right, -ve for left)."""
-        direction = GPIO.HIGH if relative_steps > 0 else GPIO.LOW
-        for _ in range(abs(relative_steps)):
-            # Check limit switches
-            if self.get_schalter_rechts_status():
-                print("Right limit reached. Stopping.")
-                break
-            if self.get_schalter_links_status():
-                print("Left limit reached. Stopping.")
-                break
-            self.move_step(direction)
-
-    def move_to_position(self, target_position):
-        """Move motor to an absolute position."""
-        relative_steps = target_position - self.aktuelle_position
-        self.move_rel_pos(relative_steps)
-
-    def get_current_position(self):
-        """Return the current stepper position."""
-        return self.aktuelle_position
-
     # Limit switches
     def get_schalter_links_status(self):
         """Check status of the left limit switch."""
         print(f"Schalter Links: {GPIO.input(self.schalterLinksPin)}")
-        return GPIO.input(self.schalterLinksPin) == GPIO.LOW
+        return GPIO.input(self.schalterLinksPin) == GPIO.HIGH
 
     def get_schalter_rechts_status(self):
         """Check status of the right limit switch."""
         print(f"Schalter Rechts: {GPIO.input(self.schalterRechtsPin)}")
-        return GPIO.input(self.schalterRechtsPin) == GPIO.HIGH
-
-    def get_status(self):
-        """Return current stepper status."""
-        return {
-            "current_position": self.aktuelle_position,
-            "limit_reached_left": self.get_schalter_links_status(),
-            "limit_reached_right": self.get_schalter_rechts_status()
-        }
+        return GPIO.input(self.schalterRechtsPin) == GPIO.LOW
 
     def shutdown(self):
         """Clean up GPIO and shutdown stepper."""
