@@ -1,4 +1,4 @@
-from src.backend.moveable.leds import LEDController
+from moveable.leds import LEDController
 
 # from .moveable import pump
 # from .moveable import scale
