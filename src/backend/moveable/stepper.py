@@ -86,10 +86,14 @@ class Stepper:
     # Limit switches
     def get_schalter_links_status(self):
         """Check status of the left limit switch."""
+        print(f"Schalter Links: {GPIO.input(self.schalterLinksPin)}")
+
         return GPIO.input(self.schalterLinksPin) == GPIO.LOW
 
     def get_schalter_rechts_status(self):
         """Check status of the right limit switch."""
+        print(f"Schalter Rechts: {GPIO.input(self.schalterRechtsPin)}")
+
         return GPIO.input(self.schalterRechtsPin) == GPIO.LOW
 
     def get_status(self):
