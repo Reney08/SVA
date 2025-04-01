@@ -1,4 +1,4 @@
-from ..moveable import leds
+from moveable import leds
 '''
 from .moveable import pump
 from .moveable import scale
