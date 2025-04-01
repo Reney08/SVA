@@ -69,7 +69,7 @@ def start_mixing():
     sequence = create_cocktail_sequence(ingredients=ingredients, pumps=pumps, positions=positions, initial_weight=0)
     execute_sequence = ExecuteSequence(sequence)
     execute_sequence.execute_sequence(sequence)
-    return 'start mixing cocktail'
+    return redirect(url_for('index'))
 
 
 @app.route('/status')
