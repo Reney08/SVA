@@ -29,7 +29,7 @@ class ExecuteSequence:
                 self.led_controller.activate_leds_by_step(liquid_position, (255, 0, 0))
                 print("moving Stepper to servo position")
                 print(f"Liquid '{step['details']['liquid']}' is stored at position {liquid_position}")
-            time.sleep(10)
+            time.sleep(1)
 
     def load_position(self):
         """
