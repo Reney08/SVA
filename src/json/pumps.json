@@ -18,5 +18,13 @@
   "pump4": {
     "pwm_channel": 4,
     "liquid": "tonic-water"
+  },
+  "pump5": {
+    "pwm_channel": 5,
+    "liquid": "fanta"
+  },
+  "pump6": {
+    "pwm_channel": 6,
+    "liquid": "sprite"
   }
 }
