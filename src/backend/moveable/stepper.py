@@ -3,7 +3,7 @@ import time
 import json
 
 
-class StepperMotor:
+class Stepper:
     def __init__(self):
         # Initialize the StepperMotor with logger, GPIO configuration, and file handlers
         with open('./json/settings.json', 'r') as file:
