@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{{ url_for('static', filename='sva-logo-2024nobackground.png') }}" type="image/png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>Bar Robot</title>
+    <style>
+        .bottom-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            position: fixed;
+            bottom: 10px;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<header class="headerbox">
+    <a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='sva-logo-2024.png') }}" class="svalogo"></a>
+    <div style="text-align: center;">
+        <a href="{{ url_for('index') }}" class="robotname">Bar Robot</a>
+    </div>
+</header>
+
+<body>
+    <div style="display: flex; flex-wrap: wrap; gap: 40px; justify-content: center; padding-top: 80px;">
+    {% for cocktail in cocktails %}
+        <div class="box" onclick="location.href='{{ url_for('selected_cocktail', selected_cocktail=cocktail) }}'">
+            <div style="text-align: center;">
+                <br>
+                <a class="getränketitel" onclick="location.href='{{ url_for('selected_cocktail', selected_cocktail=cocktail) }}'">{{ cocktail }}</a>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+
+    <div class="bottom-buttons">
+        <button onclick="location.href='{{ url_for('status') }}'">statusPage</button>
+        <button onclick="location.href='{{ url_for('shutdown') }}'">shutdown</button>
+    </div>
+</body>
+
+</html>
