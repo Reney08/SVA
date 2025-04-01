@@ -100,7 +100,7 @@ class ExecuteSequence:
         Returns:
             dict: The entry for the pump (key: "Pumps").
         """
-        return positions.get("Pumps", None)
+        return positions.get("Pumps", {}).get("steps", None)
 
     def get_pump_pwm_channel(self, pumps, liquid):
         """
