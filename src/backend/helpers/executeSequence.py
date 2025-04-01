@@ -22,13 +22,13 @@ class ExecuteSequence:
             if step['type'] == 'pump':
                 pump_position = self.get_pump_position(self.positions)
                 self.led_controller.activate_leds_by_step(pump_position, (255, 0, 0))
-                print("moving Stepper to pump position")
-                print(f"Pump Position: {pump_position}")
+                # print("moving Stepper to pump position")
+                # print(f"Pump Position: {pump_position}")
             elif step['type'] == 'servo':
                 liquid_position = self.get_position_for_liquid(self.positions, step['details']['liquid'])
-                self.led_controller.activate_leds_by_step(liquid_position, (255, 0, 0))
-                print("moving Stepper to servo position")
-                print(f"Liquid '{step['details']['liquid']}' is stored at position {liquid_position}")
+                self.led_controller.activate_leds_by_step(liquid_position, (0, 255, 0))
+                # print("moving Stepper to servo position")
+                # print(f"Liquid '{step['details']['liquid']}' is stored at position {liquid_position}")
             time.sleep(10)
             self.led_controller.deactivate_all_leds()
 
