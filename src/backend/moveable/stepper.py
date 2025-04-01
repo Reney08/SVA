@@ -66,10 +66,10 @@ class Stepper:
         direction = GPIO.HIGH if relative_steps > 0 else GPIO.LOW
         for _ in range(abs(relative_steps)):
             # Check limit switches
-            if direction == GPIO.HIGH and self.get_schalter_rechts_status():
+            if self.get_schalter_rechts_status():
                 print("Right limit reached. Stopping.")
                 break
-            if direction == GPIO.LOW and self.get_schalter_links_status():
+            if self.get_schalter_links_status():
                 print("Left limit reached. Stopping.")
                 break
             self.move_step(direction)
@@ -87,14 +87,12 @@ class Stepper:
     def get_schalter_links_status(self):
         """Check status of the left limit switch."""
         print(f"Schalter Links: {GPIO.input(self.schalterLinksPin)}")
-
         return GPIO.input(self.schalterLinksPin) == GPIO.LOW
 
     def get_schalter_rechts_status(self):
         """Check status of the right limit switch."""
         print(f"Schalter Rechts: {GPIO.input(self.schalterRechtsPin)}")
-
-        return GPIO.input(self.schalterRechtsPin) == GPIO.LOW
+        return GPIO.input(self.schalterRechtsPin) == GPIO.HIGH
 
     def get_status(self):
         """Return current stepper status."""
