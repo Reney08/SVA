@@ -1,6 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session
 # from .moveable.stepper import Stepper
 from helpers.executeSequence import ExecuteSequence
+from moveable.stepper import Stepper
 
 import json
 import glob
@@ -17,6 +18,7 @@ with open("../json/pumps.json", "r") as file:
 with open("../json/positions.json") as file:
     positions = json.load(file)
 
+stepper = Stepper()
 
 # stepper_instance = Stepper()
 
@@ -27,6 +29,7 @@ def index():
     cocktails = [os.path.splitext(os.path.basename(file))[0] for file in cocktail_files]
     # cocktails = db_handler.get_all_cocktails()
     print(cocktails)
+    stepper.quick_init()
     return render_template('index.html', cocktails=cocktails)
 
 
