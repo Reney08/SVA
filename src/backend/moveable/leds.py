@@ -122,3 +122,11 @@ class LEDController:
             print(f"Invalid position: {position}. Please choose a valid position.")
 
 
+    def print_led_mapping(self):
+        """
+        Prints the LED-to-position mapping stored in self.led_mapping.
+        """
+        print("LED Mapping:", self.led_mapping)
+
+
+
