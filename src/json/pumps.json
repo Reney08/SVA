@@ -1,0 +1,22 @@
+{
+  "pump0": {
+    "pwm_channel": 0,
+    "liquid": "Cola"
+  },
+  "pump1": {
+    "pwm_channel": 1,
+    "liquid": "orangensaft"
+  },
+  "pump2": {
+    "pwm_channel": 2,
+    "liquid": "bananensaft"
+  },
+  "pump3": {
+    "pwm_channel": 3,
+    "liquid": "ananassaft"
+  },
+  "pump4": {
+    "pwm_channel": 4,
+    "liquid": "tonic-water"
+  }
+}
