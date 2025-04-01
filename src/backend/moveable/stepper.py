@@ -6,7 +6,7 @@ import json
 class Stepper:
     def __init__(self):
         # Initialize the StepperMotor with logger, GPIO configuration, and file handlers
-        with open('./json/settings.json', 'r') as file:
+        with open('../json/settings.json', 'r') as file:
             self.settings = json.load(file)
 
         # Load GPIO configurations
@@ -19,7 +19,7 @@ class Stepper:
         self.uS = self.settings.get('uS', 0.000001)  # Microsecond in seconds
 
         # Load positions from positions.json
-        with open('./json/positions.json', 'r') as file:
+        with open('../json/positions.json', 'r') as file:
             self.positions = json.load(file)
 
         # Initialize position tracking
