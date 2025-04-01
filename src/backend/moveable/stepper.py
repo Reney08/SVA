@@ -97,7 +97,7 @@ class Stepper:
         self.defaultPos = self.positions['standardPos']['steps']
 
     def quick_init(self):
-        self.move_to_left_limit()
+        self.move_to_right_limit()
         # Explicitly reset position tracking
         self.aktuellePos = 0
         self.nullPos = 0
@@ -115,6 +115,20 @@ class Stepper:
         GPIO.output(self.DIR, GPIO.LOW)  # Set direction to left (LOW)
 
         while not GPIO.input(self.schalterLinksPin):  # Check if limit switch is pressed
+            GPIO.output(self.STEP, GPIO.HIGH)
+            time.sleep(self.uS * self.us_delay)
+            GPIO.output(self.STEP, GPIO.LOW)
+            time.sleep(self.uS * self.us_delay)
+
+        self.aktuellePos = self.maxPos  # Update limit switch
+
+    def move_to_right_limit(self):
+        """
+        Move the stepper motor as far to the right as possible until the right limit switch is triggered.
+        """
+        GPIO.output(self.DIR, GPIO.HIGH)  # Set direction to right (HIGH)
+
+        while not GPIO.input(self.schalterRechtsPin):  # Check if right limit switch is pressed
             GPIO.output(self.STEP, GPIO.HIGH)
             time.sleep(self.uS * self.us_delay)
             GPIO.output(self.STEP, GPIO.LOW)
