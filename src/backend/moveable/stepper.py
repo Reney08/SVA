@@ -38,7 +38,9 @@ class Stepper:
         GPIO.setup(self.STEP, GPIO.OUT)
         GPIO.setup(self.DIR, GPIO.OUT)
         GPIO.setup(self.EN, GPIO.OUT)
-        GPIO.output(self.EN, GPIO.LOW)  # Enable the stepper motor
+        GPIO.output(self.EN, GPIO.LOW)
+        GPIO.setup(self.schalterLinksPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.setup(self.schalterRechtsPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)# Enable the stepper motor
 
     def getSchalterRechtsStatus(self):
         # Check the status of the right limit switch
