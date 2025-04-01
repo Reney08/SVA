@@ -1,10 +1,10 @@
 import json
 from dictionaries.led_mapping import led_mapping
 
-'''
+
 import neopixel
 import board
-'''
+
 
 class LEDController:
     def __init__(self, pin=board.D18, num_leds=150, brightness=0.5, position_file="../json/positions.json"):
