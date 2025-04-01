@@ -112,7 +112,7 @@ class Stepper:
         """
         Move the stepper motor as far to the left as possible until the left limit switch is triggered.
         """
-        GPIO.output(self.DIR, GPIO.LOW)  # Set direction to left (LOW)
+        GPIO.output(self.DIR, GPIO.HIGH)  # Set direction to left (LOW)
 
         while not GPIO.input(self.schalterLinksPin):  # Check if limit switch is pressed
             GPIO.output(self.STEP, GPIO.HIGH)
@@ -126,7 +126,7 @@ class Stepper:
         """
         Move the stepper motor as far to the right as possible until the right limit switch is triggered.
         """
-        GPIO.output(self.DIR, GPIO.HIGH)  # Set direction to right (HIGH)
+        GPIO.output(self.DIR, GPIO.LOW)  # Set direction to right (HIGH)
 
         while not GPIO.input(self.schalterRechtsPin):  # Check if right limit switch is pressed
             GPIO.output(self.STEP, GPIO.HIGH)
