@@ -2,7 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for, jsonify, s
 # from .moveable.stepper import Stepper
 from helpers.executeSequence import ExecuteSequence
 
-import helpers.sequenceHelper
 import json
 import glob
 import os
@@ -201,32 +200,28 @@ def create_cocktail_sequence(ingredients, pumps, positions, initial_weight=0):
         # Handle missing ingredients in both pumps and positions
         else:
             raise ValueError(f"Ingredient '{ingredient_name}' is not available in either pumps or positions.")
-    # helpers.sequenceHelper.process_mixing_sequence(sequence)
+    make_all_lowercase(sequence)
     return sequence
 
-def convert_sequence_to_lowercase(sequence):
+def make_all_lowercase(data):
     """
-    Recursively converts all strings within the sequence to lowercase.
+        Recursively iterates over all elements in a list or dictionary
+        and converts all string keys and values into lowercase.
 
-    Args:
-        sequence (list, dict, or str): The sequence to convert.
-                                       Can be a list, dictionary, or string.
+        Args:
+            data (list | dict | str): Input data, which can be a list, dictionary, or string.
 
-    Returns:
-        list, dict, or str: The sequence converted to lowercase.
-    """
-    if isinstance(sequence, dict):
-        # If it's a dictionary, process keys and values recursively
-        return {k.lower(): convert_sequence_to_lowercase(v) for k, v in sequence.items()}
-    elif isinstance(sequence, list):
-        # If it's a list, process each element recursively
-        return [convert_sequence_to_lowercase(item) for item in sequence]
-    elif isinstance(sequence, str):
-        # If it's a string, convert to lowercase
-        return sequence.lower()
-    else:
-        # Return other types (e.g., numbers) unchanged
-        return sequence
+        Returns:
+            list | dict | str: The data with all strings converted to lowercase.
+        """
+    if isinstance(data, dict):  # If data is a dictionary
+        return {key.lower(): make_all_lowercase(value) for key, value in data.items()}
+    elif isinstance(data, list):  # If data is a list
+        return [make_all_lowercase(item) for item in data]
+    elif isinstance(data, str):  # If data is a string
+        return data.lower()
+    else:  # If data is any other type (e.g., int, float), we leave it as is
+        return data
 
 
 """
