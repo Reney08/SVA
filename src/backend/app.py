@@ -19,7 +19,8 @@ with open("../json/positions.json") as file:
     positions = json.load(file)
 
 stepper = Stepper()
-
+stepper.GPIOConfig()
+stepper.quick_init()
 # stepper_instance = Stepper()
 
 @app.route('/')
