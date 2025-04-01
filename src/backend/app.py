@@ -30,7 +30,6 @@ def index():
     cocktails = [os.path.splitext(os.path.basename(file))[0] for file in cocktail_files]
     # cocktails = db_handler.get_all_cocktails()
     print(cocktails)
-    stepper.quick_init()
     return render_template('index.html', cocktails=cocktails)
 
 
