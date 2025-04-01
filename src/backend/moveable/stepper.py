@@ -45,11 +45,11 @@ class Stepper:
 
     def getSchalterRechtsStatus(self):
         # Check the status of the right limit switch
-        return GPIO.input(self.schalterRechtsPin) == 1
+        return GPIO.input(self.schalterRechtsPin) == 0
 
     def getSchalterLinksStatus(self):
         # Check the status of the left limit switch
-        return GPIO.input(self.schalterLinksPin) == 1
+        return GPIO.input(self.schalterLinksPin) == 0
 
     def moveRelPos(self, relative_steps):
         """
