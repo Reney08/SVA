@@ -1,8 +1,10 @@
 import json
-import neopixel
-import board
 from dictionaries.led_mapping import led_mapping
 
+'''
+import neopixel
+import board
+'''
 
 class LEDController:
     def __init__(self, pin=board.D18, num_leds=150, brightness=0.5, position_file="../json/positions.json"):
@@ -14,6 +16,7 @@ class LEDController:
         :param brightness: Brightness value for the LEDs (0.0 to 1.0).
         :param position_file: JSON file containing position definitions.
         """
+
         self.pixels = neopixel.NeoPixel(
             pin,
             num_leds,
@@ -22,6 +25,7 @@ class LEDController:
             pixel_order=neopixel.GRB  # Modify if necessary for different strips
         )
         self.led_mapping = led_mapping  # LED-to-position mapping from `led_mapping.py`
+
         self.positions = self.load_positions(position_file)  # Load step mappings from JSON
 
     def load_positions(self, position_file):
@@ -50,6 +54,7 @@ class LEDController:
             if details.get("steps") == steps:
                 return position
         return None  # No matching position found
+
 
     def activate_leds_for_position(self, position, color):
         """
