@@ -16,15 +16,32 @@ class ExecuteSequence:
         self.exec_sequence = sequence
         self.positions = self.load_position()
         self.led_controller = leds.LEDController()
+        self.pumps = self.load_pumps()
+
 
     def execute_sequence(self, exec_sequence):
         for step in exec_sequence:
             if step['type'] == 'pump':
+                # Get the step count for the pump's position
                 pump_position = self.get_pump_position(self.positions)
-                self.led_controller.activate_leds_by_step(pump_position, (255, 0, 0))
+                if pump_position is not None:
+                    print(f"activate LEDs red for pump position: {pump_position['steps']}")
+                    self.led_controller.activate_leds_by_step(pump_position, (255, 0, 0))
+                    print(f"Stepper moving to pump position: {pump_position['steps']}")
+
+                    # Get the PWM channel for the liquid from pumps.json
+                    liquid = step['details']['liquid']
+                    pwm_channel = self.get_pump_pwm_channel(self.pumps, liquid)
+                    if pwm_channel is not None:
+                        print(f"The liquid '{liquid}' is dispensed from pump with PWM channel: {pwm_channel}")
+                    else:
+                        print(f"No pump found storing the liquid: {liquid}")
+                else:
+                    print("No valid pump position found!")
                 # print("moving Stepper to pump position")
                 # print(f"Pump Position: {pump_position}")
             elif step['type'] == 'servo':
+                
                 liquid_position = self.get_position_for_liquid(self.positions, step['details']['liquid'])
                 self.led_controller.activate_leds_by_step(liquid_position, (0, 255, 0))
                 # print("moving Stepper to servo position")
@@ -43,6 +60,16 @@ class ExecuteSequence:
             dict: Dictionary containing the positions data.
         """
         with open("../json/positions.json", 'r') as file:
+            return json.load(file)
+
+    def load_pumps(self):
+        """
+        Loads the pumps JSON file into a dictionary.
+
+        Returns:
+            dict: Dictionary containing the pumps data.
+        """
+        with open("../json/pumps.json", 'r') as file:
             return json.load(file)
 
     def get_position_for_liquid(self, positions, liquid):
@@ -74,4 +101,20 @@ class ExecuteSequence:
         """
         return positions.get("Pumps", None)
 
+    def get_pump_pwm_channel(self, pumps, liquid):
+        """
+        Retrieves the PWM channel for the pump storing the given liquid.
+
+        Args:
+            pumps (dict): Dictionary of pumps data from pumps.json.
+            liquid (str): The liquid to find the corresponding pump for.
+
+        Returns:
+            int: The PWM channel associated with the given liquid.
+                 Returns None if no match is found.
+        """
+        for pump, data in pumps.items():
+            if data.get("liquid") == liquid:
+                return data.get("pwm_channel", None)
+        return None  # Return None if no match is found
 
