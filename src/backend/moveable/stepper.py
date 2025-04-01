@@ -1,15 +1,13 @@
 import RPi.GPIO as GPIO
 import time
-from fileHandler import FileHandler
-from logger import setup_logger
+import json
 
 
 class StepperMotor:
     def __init__(self):
         # Initialize the StepperMotor with logger, GPIO configuration, and file handlers
-        self.logger = setup_logger()
-        self.settingsFileHandler = FileHandler('./json/settings.json')
-        self.settings = self.settingsFileHandler.readJson()
+        with open('./json/settings.json', 'r') as file:
+            self.settings = json.load(file)
 
         # Load GPIO configurations
         self.STEP = self.settings.get('STEP')
@@ -21,8 +19,8 @@ class StepperMotor:
         self.uS = self.settings.get('uS', 0.000001)  # Microsecond in seconds
 
         # Load positions from positions.json
-        self.positionsFileHandler = FileHandler('./json/positions.json')
-        self.positions = self.positionsFileHandler.readJson()
+        with open('./json/positions.json', 'r') as file:
+            self.positions = json.load(file)
 
         # Initialize position tracking
         self.aktuellePos = 0  # Current position in steps
@@ -41,7 +39,6 @@ class StepperMotor:
         GPIO.setup(self.DIR, GPIO.OUT)
         GPIO.setup(self.EN, GPIO.OUT)
         GPIO.output(self.EN, GPIO.LOW)  # Enable the stepper motor
-        self.logger.info("Stepper motor GPIO configured.")
 
     def moveRelPos(self, relative_steps):
         """
@@ -70,7 +67,6 @@ class StepperMotor:
         relative_steps = target_steps - self.aktuellePos
         self.moveRelPos(relative_steps)
         self.aktuellePos = target_steps
-        self.logger.info(f"Stepper motor moved to position: {self.aktuellePos}")
 
     def move_to_named_position(self, position_name):
         """
@@ -81,57 +77,19 @@ class StepperMotor:
         if position_name in self.positions:
             target_steps = self.positions[position_name]["steps"]
             self.move_to_position(target_steps)
-            self.logger.info(f"Stepper motor moved to named position '{position_name}' at steps: {target_steps}")
-        else:
-            self.logger.warning(f"Position '{position_name}' not found in positions.json.")
 
     def load_positions(self):
         """
         Reload positions from the JSON file.
         """
-        self.positions = self.positionsFileHandler.readJson()
         self.nullPos = self.positions['nullPos']['steps']
         self.maxPos = self.positions['maxPos']['steps']
         self.defaultPos = self.positions['standardPos']['steps']
-        self.logger.info("Positions reloaded from positions.json.")
 
-    def save_positions(self):
-        """
-        Save the current positions to the JSON file.
-        """
-        self.positionsFileHandler.writeJson(self.positions)
-        self.logger.info("Positions saved to positions.json.")
-
-    def edit_position(self, position_name, new_steps):
-        """
-        Edit the step count for an existing position and update its value.
-        Args:
-            position_name (str): The name of the position to update.
-            new_steps (int): The new step position value.
-        """
-        if position_name in self.positions:
-            self.positions[position_name]["steps"] = new_steps
-            self.save_positions()
-            self.logger.info(f"Updated position '{position_name}' to new steps: {new_steps}.")
-        else:
-            self.logger.warning(f"Position '{position_name}' does not exist. Cannot update.")
-
-    def delete_position(self, position_name):
-        """
-        Delete a position from the positions list.
-        Args:
-            position_name (str): The name of the position to delete.
-        """
-        if position_name in self.positions and position_name not in ['nullPos', 'maxPos', 'standardPos']:
-            del self.positions[position_name]
-            self.save_positions()
-            self.logger.info(f"Position '{position_name}' deleted.")
-        else:
-            self.logger.warning(f"Cannot delete position '{position_name}'. Reserved or does not exist.")
 
     def shutdown(self):
         """
         Clean up GPIO resources.
         """
         GPIO.cleanup()
-        self.logger.info("Stepper motor GPIO cleaned up.")
+
