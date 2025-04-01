@@ -6,7 +6,7 @@ import json
 class Stepper:
     def __init__(self):
         # Initialize the StepperMotor with logger, GPIO configuration, and file handlers
-        with open('../json/settings.json', 'r') as file:
+        with open('./json/settings.json', 'r') as file:
             self.settings = json.load(file)
 
         # Load GPIO configurations
@@ -19,7 +19,7 @@ class Stepper:
         self.uS = self.settings.get('uS', 0.000001)  # Microsecond in seconds
 
         # Load positions from positions.json
-        with open('../json/positions.json', 'r') as file:
+        with open('./json/positions.json', 'r') as file:
             self.positions = json.load(file)
 
         # Initialize position tracking
@@ -39,6 +39,14 @@ class Stepper:
         GPIO.setup(self.DIR, GPIO.OUT)
         GPIO.setup(self.EN, GPIO.OUT)
         GPIO.output(self.EN, GPIO.LOW)  # Enable the stepper motor
+
+    def getSchalterRechtsStatus(self):
+        # Check the status of the right limit switch
+        return GPIO.input(self.schalterRechtsPin) == 1
+
+    def getSchalterLinksStatus(self):
+        # Check the status of the left limit switch
+        return GPIO.input(self.schalterLinksPin) == 1
 
     def moveRelPos(self, relative_steps):
         """
@@ -86,6 +94,31 @@ class Stepper:
         self.maxPos = self.positions['maxPos']['steps']
         self.defaultPos = self.positions['standardPos']['steps']
 
+    def quick_init(self):
+        self.move_to_left_limit()
+        # Explicitly reset position tracking
+        self.aktuellePos = 0
+        self.nullPos = 0
+        time.sleep(1)
+
+        # Ensure direction is set correctly before moving right
+        GPIO.output(self.DIR, GPIO.LOW)
+        self.move_to_position(self.defaultPos)
+        self.aktuellePos = self.defaultPos
+
+    def move_to_left_limit(self):
+        """
+        Move the stepper motor as far to the left as possible until the left limit switch is triggered.
+        """
+        GPIO.output(self.DIR, GPIO.LOW)  # Set direction to left (LOW)
+
+        while not GPIO.input(self.schalterLinksPin):  # Check if limit switch is pressed
+            GPIO.output(self.STEP, GPIO.HIGH)
+            time.sleep(self.uS * self.us_delay)
+            GPIO.output(self.STEP, GPIO.LOW)
+            time.sleep(self.uS * self.us_delay)
+
+        self.aktuellePos = 0  # Reset current position to zero (since it's at the limit)
 
     def shutdown(self):
         """
