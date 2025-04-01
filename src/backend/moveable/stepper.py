@@ -41,7 +41,8 @@ class Stepper:
         GPIO.output(self.EN, GPIO.LOW)
         GPIO.output(self.DIR, GPIO.LOW)
         GPIO.setup(self.schalterLinksPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.setup(self.schalterRechtsPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)# Enable the stepper motor
+        GPIO.setup(self.schalterRechtsPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        # Enable the stepper motor
 
     def getSchalterRechtsStatus(self):
         # Check the status of the right limit switch
@@ -52,33 +53,39 @@ class Stepper:
         return GPIO.input(self.schalterLinksPin) == 1
 
     def moveRelPos(self, relative_steps):
-        """
-        Move the stepper motor by a relative number of steps.
-        Args:
-            relative_steps (int): Number of steps to move (positive for forward, negative for backward).
-        """
+        """ Bewegt den Stepper-Motor um eine relative Anzahl an Schritten. """
+        if relative_steps == 0:
+            print("Motor ist bereits an der gewünschten Position.")
+            return
+
+        # Richtung setzen
         direction = GPIO.HIGH if relative_steps > 0 else GPIO.LOW
         absolute_steps = abs(relative_steps)
         GPIO.output(self.DIR, direction)
 
         for _ in range(absolute_steps):
+            # Grenzüberprüfung vor der Bewegung
+            if (direction == GPIO.HIGH and self.aktuellePos >= self.maxPos) or \
+                    (direction == GPIO.LOW and self.aktuellePos <= self.nullPos):
+                print("⚠️ Grenze erreicht! Motor stoppt.")
+                break  # Stoppe die Bewegung
+
             GPIO.output(self.STEP, GPIO.HIGH)
             time.sleep(self.uS * self.us_delay)
             GPIO.output(self.STEP, GPIO.LOW)
             time.sleep(self.uS * self.us_delay)
 
-        self.aktuellePos += relative_steps  # Update the current position
+            # Position aktualisieren
+            self.aktuellePos += 1 if direction == GPIO.HIGH else -1
 
     def move_to_position(self, target_steps):
-        """
-        Move the stepper motor to an absolute position.
-        Args:
-            target_steps (int): The target position in steps.
-        """
+        """ Bewegt den Stepper-Motor zu einer absoluten Position. """
+        if target_steps == self.aktuellePos:
+            print("Motor ist bereits an der gewünschten Position.")
+            return
+
         relative_steps = target_steps - self.aktuellePos
         self.moveRelPos(relative_steps)
-        self.aktuellePos = target_steps
-
     def move_to_named_position(self, position_name):
         """
         Move the stepper motor to a named position from positions.json.
@@ -113,7 +120,7 @@ class Stepper:
         """
         Move the stepper motor as far to the left as possible until the left limit switch is triggered.
         """
-        GPIO.output(self.DIR, GPIO.HIGH)  # Set direction to left (LOW)
+        GPIO.output(self.DIR, GPIO.LOW)  # Set direction to left (LOW)
 
         while not GPIO.input(self.schalterLinksPin):  # Check if limit switch is pressed
             GPIO.output(self.STEP, GPIO.HIGH)
@@ -127,7 +134,7 @@ class Stepper:
         """
         Move the stepper motor as far to the right as possible until the right limit switch is triggered.
         """
-        GPIO.output(self.DIR, GPIO.LOW)  # Set direction to right (HIGH)
+        GPIO.output(self.DIR, GPIO.HIGH)  # Set direction to right (HIGH)
 
         while not GPIO.input(self.schalterRechtsPin):  # Check if right limit switch is pressed
             GPIO.output(self.STEP, GPIO.HIGH)
