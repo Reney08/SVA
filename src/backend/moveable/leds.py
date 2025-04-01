@@ -25,6 +25,8 @@ class LEDController:
             pixel_order=neopixel.GRB  # Modify if necessary for different strips
         )
         self.led_mapping = led_mapping  # LED-to-position mapping from `led_mapping.py`
+        print("LED Mapping Loaded:", self.led_mapping)  # Debug statement to print the mapping
+
 
         self.positions = self.load_positions(position_file)  # Load step mappings from JSON
 
