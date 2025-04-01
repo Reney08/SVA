@@ -204,6 +204,29 @@ def create_cocktail_sequence(ingredients, pumps, positions, initial_weight=0):
     # helpers.sequenceHelper.process_mixing_sequence(sequence)
     return sequence
 
+def convert_sequence_to_lowercase(sequence):
+    """
+    Recursively converts all strings within the sequence to lowercase.
+
+    Args:
+        sequence (list, dict, or str): The sequence to convert.
+                                       Can be a list, dictionary, or string.
+
+    Returns:
+        list, dict, or str: The sequence converted to lowercase.
+    """
+    if isinstance(sequence, dict):
+        # If it's a dictionary, process keys and values recursively
+        return {k.lower(): convert_sequence_to_lowercase(v) for k, v in sequence.items()}
+    elif isinstance(sequence, list):
+        # If it's a list, process each element recursively
+        return [convert_sequence_to_lowercase(item) for item in sequence]
+    elif isinstance(sequence, str):
+        # If it's a string, convert to lowercase
+        return sequence.lower()
+    else:
+        # Return other types (e.g., numbers) unchanged
+        return sequence
 
 
 """
