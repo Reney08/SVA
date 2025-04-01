@@ -98,7 +98,7 @@ class Stepper:
         self.defaultPos = self.positions['standardPos']['steps']
 
     def quick_init(self):
-        self.move_to_right_limit()
+        self.move_to_left_limit()
         # Explicitly reset position tracking
         self.aktuellePos = 0
         self.nullPos = 0
