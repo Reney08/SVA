@@ -39,6 +39,7 @@ class Stepper:
         GPIO.setup(self.DIR, GPIO.OUT)
         GPIO.setup(self.EN, GPIO.OUT)
         GPIO.output(self.EN, GPIO.LOW)
+        GPIO.output(self.DIR, GPIO.LOW)
         GPIO.setup(self.schalterLinksPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(self.schalterRechtsPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)# Enable the stepper motor
 
