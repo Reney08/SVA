@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session
 # from .moveable.stepper import Stepper
 from helpers.executeSequence import ExecuteSequence
-from moveable.stepper import Stepper
+# from moveable.stepper import Stepper
 
 import json
 import glob
@@ -17,12 +17,12 @@ with open("../json/pumps.json", "r") as file:
 
 with open("../json/positions.json") as file:
     positions = json.load(file)
-
+'''
 stepper = Stepper()
 stepper.GPIOConfig()
 stepper.quick_init()
 # stepper_instance = Stepper()
-
+'''
 @app.route('/')
 def index():
     # List all cocktail JSON files and render the index page
