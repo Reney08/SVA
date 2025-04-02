@@ -2,7 +2,7 @@ from moveable.leds import LEDController
 # from moveable import pump
 # from moveable import scale
 # from moveable import servo
-from moveable.stepper import Stepper
+# from moveable.stepper import Stepper
 
 
 # import sequenceHelper
@@ -26,7 +26,7 @@ class ExecuteSequence:
         # self.stepper = Stepper()
 
         
-        self.stepper = Stepper()
+        # self.stepper = Stepper()
         self.led_controller = LEDController()
         
 
@@ -38,7 +38,7 @@ class ExecuteSequence:
                 if pump_position is not None:
                     
                     self.led_controller.activate_leds_by_step(self.get_pump_position(self.positions), (0, 255, 0))
-                    self.stepper.move_to_position(pump_position)
+                    # self.stepper.move_to_position(pump_position)
                     
                     print(f"moving Stepper to pump position {pump_position}")
                     # Get the PWM channel for the liquid from pumps.json
@@ -56,7 +56,7 @@ class ExecuteSequence:
                 liquid_position = self.get_position_for_liquid(self.positions, step['details']['liquid'])
                 
                 self.led_controller.activate_leds_by_step(liquid_position, (0, 255, 0))
-                self.stepper.move_to_position(liquid_position)
+                # self.stepper.move_to_position(liquid_position)
                 
                 print("activate LEDs blue")
                 print("moving Stepper to servo position")
