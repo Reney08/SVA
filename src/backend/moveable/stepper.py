@@ -112,10 +112,10 @@ class Stepper:
         print(f"targetPos: {targetPos}")
         calculatedSteps = self.calculateStepsToNextPos(targetPos)
         print(f"calculatedSteps: {calculatedSteps}")
-        if calculatedSteps < 0:
+        if calculatedSteps > 0:
             for _ in range(calculatedSteps):
                 self.moveRight()
-        elif calculatedSteps > 0:
+        elif calculatedSteps < 0:
             for _ in range(abs(calculatedSteps)):
                 self.moveLeft()
         print("finished move")
