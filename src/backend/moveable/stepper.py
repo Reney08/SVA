@@ -68,7 +68,7 @@ class Stepper:
     def stepperInit(self):
         self.aktuellePos = 10
         print(f"aktuellePos: {self.aktuellePos}")
-        while not self.getSchalterLinksStatus() == 0:
+        while not self.getSchalterLinksStatus() == 1:
             self.move_to_left_limit()
         '''
         while not self.aktuellePos == 0:
@@ -92,18 +92,18 @@ class Stepper:
 
     def moveLeft(self):
         print("move left")
-        GPIO.output(self.STEP, GPIO.HIGH)
-        time.sleep(self.wait)
         GPIO.output(self.STEP, GPIO.LOW)
+        time.sleep(self.wait)
+        GPIO.output(self.STEP, GPIO.HIGH)
         time.sleep(self.wait)
         self.aktuellePos = self.aktuellePos - 1
         print(f"aktuellePos: {self.aktuellePos}")
 
     def moveRight(self):
         print("move right")
-        GPIO.output(self.STEP, GPIO.LOW)
-        time.sleep(self.wait)
         GPIO.output(self.STEP, GPIO.HIGH)
+        time.sleep(self.wait)
+        GPIO.output(self.STEP, GPIO.LOW)
         time.sleep(self.wait)
         self.aktuellePos = self.aktuellePos + 1
         print(f"aktuellePos: {self.aktuellePos}")
