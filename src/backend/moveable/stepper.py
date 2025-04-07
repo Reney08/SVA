@@ -114,11 +114,11 @@ class Stepper:
         print(f"calculatedSteps: {calculatedSteps}")
         if calculatedSteps > 0:
             for _ in range(calculatedSteps):
-                GPIO.output(self.DIR, self.HIGH)
+                GPIO.output(self.DIR, GPIO.HIGH)
                 self.moveRight()
         elif calculatedSteps < 0:
             for _ in range(abs(calculatedSteps)):
-                GPIO.output(self.DIR, self.LOW)
+                GPIO.output(self.DIR, GPIO.LOW)
                 self.moveLeft()
         print("finished move")
         print(self.aktuellePos)
