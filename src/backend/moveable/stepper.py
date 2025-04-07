@@ -25,7 +25,11 @@ class Stepper:
         self.schalterRechtsPin = self.settings.get('schalterRechtsPin')
         self.us_delay = self.settings.get('us_delay', 950)  # Default microsecond delay
         self.uS = self.settings.get('uS', 0.000001)  # Microsecond in seconds
+        
+        print(f"STEP: {self.STEP}, DIR: {self.DIR}, EN: {self.EN}, schalterLinksPin: {self.schalterLinksPin}, schalterRechtsPin: {self.schalterRechtsPin}, us_delay: {self.us_delay}, uS: {self.uS}")
 
+        # GPIO setup
+        self.gpioSetup()
         # Load positions from positions.json
         with open('../json/positions.json', 'r') as file:
             self.positions = json.load(file)
@@ -36,9 +40,6 @@ class Stepper:
         self.maxPos = self.positions['maxPos']['steps']  # Steps for max position
         self.defaultPos = self.positions['standardPos']['steps']  # Standard position steps
         self.wait = self.uS * self.us_delay
-
-        # GPIO setup
-        self.gpioSetup()
 
     '''
     def gpioSetup(self):
