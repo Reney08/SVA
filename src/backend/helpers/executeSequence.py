@@ -1,8 +1,8 @@
-# from src.backend.moveable.leds import LEDController
+moveable.leds import LEDController
 
 # from .moveable import pump
 # from .moveable import scale
-# from src.backend.moveable.pcadevice import PCADevice
+moveable.pcadevice import PCADevice
 from moveable.servo import ServoMotor
 from moveable.stepper import Stepper
 
