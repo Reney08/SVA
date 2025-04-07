@@ -75,7 +75,7 @@ class ExecuteSequence:
 
                 print(f"Liquid '{step['details']['liquid']}' is stored at position {liquid_position}")
 
-            # self.led_controller.deactivate_all_leds()
+            self.led_controller.deactivate_all_leds()
         self.stepper.moveToStandartPos()
 
     def load_position(self):
