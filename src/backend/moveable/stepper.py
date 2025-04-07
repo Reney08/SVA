@@ -40,7 +40,7 @@ class Stepper:
         # GPIO setup
         self.gpioSetup()
 
-
+    '''
     def gpioSetup(self):
         print("GPIO Setup")
         print(self.STEP)
@@ -51,7 +51,7 @@ class Stepper:
 
         print(f"linker schalter{self.getSchalterLinksStatus()}")
         print(f"rechter schalter{self.getSchalterRechtsStatus()}")
-
+    '''
     def stepperInit(self):
 
         self.aktuellePos = 10
@@ -68,9 +68,9 @@ class Stepper:
 
 
     def getSchalterRechtsStatus(self):
-        # return GPIO.input(self.schalterRechtsPin)
+        return GPIO.input(self.schalterRechtsPin)
         # print(self.schalterRechtsPin)
-        return 0
+        # return 0
 
     def getSchalterLinksStatus(self):
         # return GPIO.input(self.schalterLinksPin)
@@ -79,14 +79,14 @@ class Stepper:
 
     def moveLeft(self):
         print("move left")
-        # GPIO.output(self.STEP, GPIO.HIGH)
+        GPIO.output(self.STEP, GPIO.HIGH)
         self.aktuellePos = self.aktuellePos - 1
         print(f"aktuellePos: {self.aktuellePos}")
         time.sleep(self.wait)
 
     def moveRight(self):
         print("move right")
-        # GPIO.output(self.STEP, GPIO.LOW)
+        GPIO.output(self.STEP, GPIO.LOW)
         self.aktuellePos = self.aktuellePos + 1
         print(f"aktuellePos: {self.aktuellePos}")
         time.sleep(self.wait)
@@ -119,7 +119,7 @@ class Stepper:
             print(steps)
             self.move(steps)
 
-    '''
+    
     def GPIOConfig(self):
         """Configure GPIO settings for the stepper motor."""
         GPIO.setmode(GPIO.BCM)
@@ -132,7 +132,7 @@ class Stepper:
         GPIO.setup(self.schalterLinksPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(self.schalterRechtsPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         # Enable the stepper motor
-
+    '''
     def getSchalterRechtsStatus(self):
         # Check the status of the right limit switch
         return GPIO.input(self.schalterRechtsPin) == 1
