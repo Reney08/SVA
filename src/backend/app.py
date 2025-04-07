@@ -1,7 +1,7 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session
-# from .moveable.stepper import Stepper
 from helpers.executeSequence import ExecuteSequence
-# from moveable.stepper import Stepper
+from moveable.stepper import Stepper
+from moveable.servo import ServoMotor
 
 import json
 import glob
@@ -17,17 +17,15 @@ with open("../json/pumps.json", "r") as file:
 
 with open("../json/positions.json") as file:
     positions = json.load(file)
-'''
-stepper = Stepper()
-stepper.GPIOConfig()
-stepper.quick_init()
-# stepper_instance = Stepper()
-'''
+
+stepper_instance = Stepper()
+
 @app.route('/')
 def index():
     # List all cocktail JSON files and render the index page
     cocktail_files = glob.glob('../json/cocktails/*.json')
     cocktails = [os.path.splitext(os.path.basename(file))[0] for file in cocktail_files]
+    stepper_instance.moveToStandartPos()
     # cocktails = db_handler.get_all_cocktails()
     print(cocktails)
     return render_template('index.html', cocktails=cocktails)
@@ -250,4 +248,14 @@ def print_sequence(sequence):
 """
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    stepper = Stepper()
+    stepper.gpioSetup()
+    stepper.stepperInit()
+
+    servo = ServoMotor(address=0x41, channel=0)
+    servo.deactivate()
+
+
+    app.run(debug=False)
+
+
