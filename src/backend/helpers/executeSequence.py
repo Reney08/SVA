@@ -39,9 +39,9 @@ class ExecuteSequence:
                 # Get the step count for the pump's position
                 pump_position = self.get_pump_position(self.positions)
                 if pump_position is not None:
-                    '''
+                    
                     self.led_controller.activate_leds_by_step(self.get_pump_position(self.positions), (0, 255, 0))
-                    '''
+                    
                     print(f"moving Stepper to pump position {pump_position}")
                     self.stepper.move(pump_position)
                     # Get the PWM channel for the liquid from pumps.json
@@ -59,10 +59,9 @@ class ExecuteSequence:
             elif step['type'] == 'servo':
                 liquid_position = self.get_position_for_liquid(self.positions, step['details']['liquid'])
                 if liquid_position is not None:
-                    '''
+                    
                     self.led_controller.activate_leds_by_step(liquid_position, (0, 255, 0))
-                    self.stepper.move_to_position(liquid_position)
-                    '''
+                    
                     print(f"moving Stepper to liquid position {liquid_position} for servo")
                     self.stepper.move(liquid_position)
                     self.servo.activate()
