@@ -32,7 +32,7 @@ class ExecuteSequence:
         
 
     def execute_sequence(self, exec_sequence):
-        # self.stepper.moveToStandartPos()
+        self.stepper.moveToStandartPos()
         self.servo.move_to_waiting()
         for step in exec_sequence:
             if step['type'] == 'pump':
