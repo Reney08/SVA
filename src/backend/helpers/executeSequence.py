@@ -3,8 +3,8 @@
 # from .moveable import pump
 # from .moveable import scale
 # from src.backend.moveable.pcadevice import PCADevice
-from src.backend.moveable.servo import ServoMotor
-from src.backend.moveable.stepper import Stepper
+from moveable.servo import ServoMotor
+from moveable.stepper import Stepper
 
 
 # import sequenceHelper
