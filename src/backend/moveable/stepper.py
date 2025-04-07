@@ -68,7 +68,7 @@ class Stepper:
     def stepperInit(self):
         self.aktuellePos = 10
         print(f"aktuellePos: {self.aktuellePos}")
-        while not self.getSchalterRechtsStatus() == 0:
+        while not self.getSchalterLinksStatus() == 0:
             self.move_to_left_limit()
         '''
         while not self.aktuellePos == 0:
