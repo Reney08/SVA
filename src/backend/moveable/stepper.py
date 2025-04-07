@@ -97,6 +97,8 @@ class Stepper:
         GPIO.output(self.STEP, GPIO.LOW)
         time.sleep(self.wait)
         self.aktuellePos = self.aktuellePos - 1
+        GPIO.output(self.STEP, GPIO.LOW)
+
         print(f"aktuellePos: {self.aktuellePos}")
 
     def moveRight(self):
@@ -106,6 +108,8 @@ class Stepper:
         GPIO.output(self.STEP, GPIO.HIGH)
         time.sleep(self.wait)
         self.aktuellePos = self.aktuellePos + 1
+        GPIO.output(self.STEP, GPIO.LOW)
+
         print(f"aktuellePos: {self.aktuellePos}")
 
     def move(self, targetPos):
@@ -116,10 +120,12 @@ class Stepper:
             for _ in range(calculatedSteps):
                 GPIO.output(self.DIR, GPIO.HIGH)
                 self.moveRight()
+                GPIO.output(self.DIR, GPIO.LOW)
         elif calculatedSteps < 0:
             for _ in range(abs(calculatedSteps)):
                 GPIO.output(self.DIR, GPIO.LOW)
                 self.moveLeft()
+                GPIO.output(self.DIR, GPIO.LOW)
         print("finished move")
         print(self.aktuellePos)
 
