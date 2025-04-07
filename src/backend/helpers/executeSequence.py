@@ -3,8 +3,8 @@ from moveable.leds import LEDController
 # from .moveable import pump
 # from .moveable import scale
 from moveable.pcadevice import PCADevice
-from moveable.servo import ServoMotor
-from moveable.stepper import Stepper
+from src.backend.moveable.servo import ServoMotor
+from src.backend.moveable.stepper import Stepper
 
 
 # import sequenceHelper
@@ -25,7 +25,11 @@ class ExecuteSequence:
         print(self.positions)
         self.stepper = Stepper()
         self.servo = ServoMotor(address=0x41, channel=0)
+        '''
+        self.stepper = Stepper()
+        '''
         self.led_controller = LEDController()
+        
 
     def execute_sequence(self, exec_sequence):
         # self.stepper.moveToStandartPos()
@@ -35,10 +39,9 @@ class ExecuteSequence:
                 # Get the step count for the pump's position
                 pump_position = self.get_pump_position(self.positions)
                 if pump_position is not None:
-                    
+                    '''
                     self.led_controller.activate_leds_by_step(self.get_pump_position(self.positions), (0, 255, 0))
-                    self.stepper.move_to_position(pump_position)
-                    
+                    '''
                     print(f"moving Stepper to pump position {pump_position}")
                     self.stepper.move(pump_position)
                     # Get the PWM channel for the liquid from pumps.json
@@ -56,10 +59,10 @@ class ExecuteSequence:
             elif step['type'] == 'servo':
                 liquid_position = self.get_position_for_liquid(self.positions, step['details']['liquid'])
                 if liquid_position is not None:
-                    
+                    '''
                     self.led_controller.activate_leds_by_step(liquid_position, (0, 255, 0))
                     self.stepper.move_to_position(liquid_position)
-                    
+                    '''
                     print(f"moving Stepper to liquid position {liquid_position} for servo")
                     self.stepper.move(liquid_position)
                     self.servo.activate()
@@ -126,7 +129,7 @@ class ExecuteSequence:
             dict: The entry for the pump (key: "Pumps").
         """
         return positions.get("Pumps", {}).get("steps", None)
-    
+    '''
     def decide_pump(self, channel):
         match channel:
             case 0:
@@ -157,7 +160,7 @@ class ExecuteSequence:
                 self.led_controller.activate_leds_by_step(self.get_pump_position(self.positions),
                                                            (255, 255, 255))
                 print("activate LEDs white")
-    
+    '''
 
     def get_pump_pwm_channel(self, pumps, liquid):
         """
