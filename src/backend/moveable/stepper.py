@@ -60,10 +60,10 @@ class Stepper:
         GPIO.setup(self.STEP, GPIO.OUT)
         GPIO.setup(self.DIR, GPIO.OUT)
         GPIO.setup(self.EN, GPIO.OUT)
-        GPIO.output(self.EN, GPIO.LOW)
-        GPIO.output(self.DIR, GPIO.LOW)
         GPIO.setup(self.schalterLinksPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
         GPIO.setup(self.schalterRechtsPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.output(self.EN, GPIO.LOW)
+
             
     def stepperInit(self):
         self.aktuellePos = 10
@@ -93,16 +93,20 @@ class Stepper:
     def moveLeft(self):
         print("move left")
         GPIO.output(self.STEP, GPIO.HIGH)
+        time.sleep(self.wait)
+        GPIO.output(self.STEP, GPIO.LOW)
+        time.sleep(self.wait)
         self.aktuellePos = self.aktuellePos - 1
         print(f"aktuellePos: {self.aktuellePos}")
-        time.sleep(self.wait)
 
     def moveRight(self):
         print("move right")
         GPIO.output(self.STEP, GPIO.LOW)
+        time.sleep(self.wait)
+        GPIO.output(self.STEP, GPIO.HIGH)
+        time.sleep(self.wait)
         self.aktuellePos = self.aktuellePos + 1
         print(f"aktuellePos: {self.aktuellePos}")
-        time.sleep(self.wait)
 
     def move(self, targetPos):
         print(f"targetPos: {targetPos}")
