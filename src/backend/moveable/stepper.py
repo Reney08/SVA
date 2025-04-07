@@ -79,14 +79,15 @@ class Stepper:
 
 
     def getSchalterRechtsStatus(self):
+        print(self.schalterRechtsPin)
         return GPIO.input(self.schalterRechtsPin)
-        # print(self.schalterRechtsPin)
         # return 0
 
     def getSchalterLinksStatus(self):
-        # return GPIO.input(self.schalterLinksPin)
+        print(self.schalterLinksPin)
+        return GPIO.input(self.schalterLinksPin)
         # print(self.schalterLinksPin)
-        return 0
+        # return 0
 
     def moveLeft(self):
         print("move left")
