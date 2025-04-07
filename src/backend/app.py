@@ -25,7 +25,7 @@ def index():
     # List all cocktail JSON files and render the index page
     cocktail_files = glob.glob('../json/cocktails/*.json')
     cocktails = [os.path.splitext(os.path.basename(file))[0] for file in cocktail_files]
-    stepper_instance.moveToStandartPos()
+    # stepper_instance.moveToStandartPos()
     # cocktails = db_handler.get_all_cocktails()
     print(cocktails)
     return render_template('index.html', cocktails=cocktails)
