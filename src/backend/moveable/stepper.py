@@ -92,18 +92,18 @@ class Stepper:
 
     def moveLeft(self):
         print("move left")
-        GPIO.output(self.STEP, GPIO.LOW)
-        time.sleep(self.wait)
         GPIO.output(self.STEP, GPIO.HIGH)
+        time.sleep(self.wait)
+        GPIO.output(self.STEP, GPIO.LOW)
         time.sleep(self.wait)
         self.aktuellePos = self.aktuellePos - 1
         print(f"aktuellePos: {self.aktuellePos}")
 
     def moveRight(self):
         print("move right")
-        GPIO.output(self.STEP, GPIO.HIGH)
-        time.sleep(self.wait)
         GPIO.output(self.STEP, GPIO.LOW)
+        time.sleep(self.wait)
+        GPIO.output(self.STEP, GPIO.HIGH)
         time.sleep(self.wait)
         self.aktuellePos = self.aktuellePos + 1
         print(f"aktuellePos: {self.aktuellePos}")
@@ -142,14 +142,8 @@ class Stepper:
         """
         GPIO.output(self.DIR, GPIO.LOW)  # Set direction to left (LOW)
 
-        while not GPIO.input(self.schalterLinksPin):  # Check if limit switch is pressed
-            GPIO.output(self.STEP, GPIO.HIGH)
-            time.sleep(self.uS * self.us_delay)
-            GPIO.output(self.STEP, GPIO.LOW)
-            time.sleep(self.uS * self.us_delay)
-
-        self.aktuellePos = self.maxPos  # Update limit switch
-
+        while not self.getSchalterLinksStatus():  # Check if limit switch is pressed
+            self.moveLeft()
     '''
     def GPIOConfig(self):
         """Configure GPIO settings for the stepper motor."""
