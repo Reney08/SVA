@@ -68,7 +68,7 @@ class Stepper:
         self.aktuellePos = 10
         print(f"aktuellePos: {self.aktuellePos}")
         while not self.getSchalterRechtsStatus() == 0:
-            self.moveLeft()
+            self.move_to_left_limit()
         '''
         while not self.aktuellePos == 0:
             print("aktpos not 0")
@@ -130,6 +130,20 @@ class Stepper:
             steps = standartPos.get('steps', 5000)
             print(steps)
             self.move(steps)
+
+    def move_to_left_limit(self):
+        """
+        Move the stepper motor as far to the left as possible until the left limit switch is triggered.
+        """
+        GPIO.output(self.DIR, GPIO.LOW)  # Set direction to left (LOW)
+
+        while not GPIO.input(self.schalterLinksPin):  # Check if limit switch is pressed
+            GPIO.output(self.STEP, GPIO.HIGH)
+            time.sleep(self.uS * self.us_delay)
+            GPIO.output(self.STEP, GPIO.LOW)
+            time.sleep(self.uS * self.us_delay)
+
+        self.aktuellePos = self.maxPos  # Update limit switch
 
     '''
     def GPIOConfig(self):
