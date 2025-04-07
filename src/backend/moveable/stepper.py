@@ -65,16 +65,15 @@ class Stepper:
         GPIO.setup(self.schalterRechtsPin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
             
     def stepperInit(self):
-
         self.aktuellePos = 10
         print(f"aktuellePos: {self.aktuellePos}")
         while not self.getSchalterRechtsStatus() == 0:
             self.moveLeft()
-
+        '''
         while not self.aktuellePos == 0:
             print("aktpos not 0")
             self.moveLeft()
-
+        '''
         self.aktuellePos = 0
         print("finished init")
 
