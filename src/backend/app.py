@@ -250,7 +250,7 @@ def print_sequence(sequence):
 if __name__ == '__main__':
     stepper = Stepper()
     stepper.gpioSetup()
-    # stepper.stepperInit()
+    stepper.stepperInit()
 
     servo = ServoMotor(address=0x41, channel=0)
     servo.deactivate()
