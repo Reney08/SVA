@@ -68,11 +68,11 @@ class Stepper:
     def stepperInit(self):
         print(f"aktuellePos: {self.aktuellePos}")
         self.move_to_left_limit()
-        '''
+        
         while not self.aktuellePos == 0:
             print("aktpos not 0")
             self.moveLeft()
-        '''
+        
         self.aktuellePos = 0
         print("finished init")
 
