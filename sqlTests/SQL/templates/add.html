@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Zapfstelle hinzufügen</title>
+</head>
+<body>
+    <h1>Zapfstelle hinzufügen</h1>
+    <form id="addForm">
+        <label>SchienenPos: <input type="number" name="SchienenPos" required></label><br>
+        <label>Pumpe (true/false): <input type="text" name="Pumpe" required></label><br>
+        <label>PumpenNR: <input type="number" name="PumpenNR" required></label><br>
+        <label>Fuellmenge: <input type="number" name="Fuellmenge" required></label><br>
+        <button type="submit">Hinzufügen</button>
+    </form>
+
+    <p id="statusMessage"></p>
+    {% include "zapfTable.html" %}
+
+    <script>
+        document.getElementById('addForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const payload = {
+                SchienenPos: parseInt(formData.get('SchienenPos')),
+                Pumpe: formData.get('Pumpe').toLowerCase() === 'true',
+                PumpenNR: parseInt(formData.get('PumpenNR')),
+                Fuellmenge: parseInt(formData.get('Fuellmenge'))
+            };
+
+            fetch('/api/Zapfstelle/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Fehler beim Speichern');
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('statusMessage').textContent = "✅ Zapfstelle erfolgreich hinzugefügt!";
+                this.reset(); // clear form
+            })
+            .catch(error => {
+                document.getElementById('statusMessage').textContent = "❌ Fehler: " + error.message;
+            });
+        });
+    </script>
+</body>
+</html>

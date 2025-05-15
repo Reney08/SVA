@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Alle Zapfstellen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/getAll.css') }}">
+</head>
+<body>
+    <h1>Alle Zapfstellen</h1>
+    <nav>
+        <a href="/add">Hinzufügen</a> | 
+        <a href="/delete">Löschen</a> | 
+        <a href="/setZapfstelle">Bearbeiten</a>
+    </nav>
+    <div id="allZapfstellen"></div>
+    <script>
+        function fetchAll() {
+            fetch('/api/Zapfstelle/getAll')
+                .then(res => res.json())
+                .then(data => {
+                    if (!data.length) {
+                        document.getElementById('allZapfstellen').textContent = "Keine Zapfstellen gefunden.";
+                        return;
+                    }
+                    let html = "<table><tr><th>ID</th><th>SchienenPos</th><th>Pumpe</th><th>PumpenNR</th><th>Fuellmenge</th></tr>";
+                    data.forEach(row => {
+                        html += "<tr>" + row.map(cell => `<td>${cell}</td>`).join('') + "</tr>";
+                    });
+                    html += "</table>";
+                    document.getElementById('allZapfstellen').innerHTML = html;
+                });
+        }
+        fetchAll();
+    </script>
+</body>
+</html>

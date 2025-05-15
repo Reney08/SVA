@@ -1,0 +1,24 @@
+<div id="zapfTableContainer">
+    <h2>Alle Zapfstellen</h2>
+    <div id="allZapfstellen">Lade...</div>
+</div>
+
+<script>
+    function fetchAll() {
+        fetch('/api/Zapfstelle/getAll')
+            .then(res => res.json())
+            .then(data => {
+                if (!data.length) {
+                    document.getElementById('allZapfstellen').textContent = "Keine Zapfstellen gefunden.";
+                    return;
+                }
+                let html = "<table border='1'><tr><th>ID</th><th>SchienenPos</th><th>Pumpe</th><th>PumpenNR</th><th>Fuellmenge</th></tr>";
+                data.forEach(row => {
+                    html += "<tr>" + row.map(cell => `<td>${cell}</td>`).join('') + "</tr>";
+                });
+                html += "</table>";
+                document.getElementById('allZapfstellen').innerHTML = html;
+            });
+    }
+    fetchAll();
+</script>

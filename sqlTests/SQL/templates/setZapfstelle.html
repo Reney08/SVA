@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Zapfstelle bearbeiten</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/setZapfstelle.css') }}">
+</head>
+<body>
+    <h1>Zapfstelle bearbeiten</h1>
+    <form id="updateForm">
+        <label for="id">Zapfstelle ID:</label>
+        <input type="number" id="id" name="id" required><br><br>
+
+        <label for="field">Feld zum Bearbeiten:</label>
+        <select id="field" name="field">
+            <option value="">-- auswählen --</option>
+            <option value="schienenPos">SchienenPos</option>
+            <option value="pumpe">Pumpe</option>
+            <option value="pumpenNr">PumpenNR</option>
+            <option value="fuellmenge">Fuellmenge</option>
+        </select><br><br>
+
+        <div id="fieldInputContainer"></div>
+
+        <button type="submit">Aktualisieren</button>
+    </form>
+
+    {% include "zapfTable.html" %}
+
+    <script>
+        const fieldSelect = document.getElementById("field");
+        const inputContainer = document.getElementById("fieldInputContainer");
+
+        fieldSelect.addEventListener("change", () => {
+            const field = fieldSelect.value;
+            let html = "";
+            switch (field) {
+                case "schienenPos":
+                    html = `<label for="value">SchienenPos:</label>
+                            <input type="number" id="value" name="value">`;
+                    break;
+                case "pumpe":
+                    html = `<label for="value">Pumpe:</label>
+                            <select id="value" name="value">
+                                <option value="true">Ja</option>
+                                <option value="false">Nein</option>
+                            </select>`;
+                    break;
+                case "pumpenNr":
+                    html = `<label for="value">PumpenNR:</label>
+                            <input type="number" id="value" name="value">`;
+                    break;
+                case "fuellmenge":
+                    html = `<label for="value">Fuellmenge:</label>
+                            <input type="number" id="value" name="value">`;
+                    break;
+            }
+            inputContainer.innerHTML = html + "<br><br>";
+        });
+
+        document.getElementById("updateForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const id = document.getElementById("id").value;
+            const field = document.getElementById("field").value;
+            const value = document.getElementById("value")?.value;
+
+            if (!id || !field || value === undefined) {
+                alert("Bitte alle Felder ausfüllen.");
+                return;
+            }
+
+            // Prepare dynamic JSON
+            let data = { id: parseInt(id) };
+            data[field] = value;
+
+            const res = await fetch('/api/Zapfstelle/set', {
+                method: "POST",
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await res.json();
+            alert(result.status || result.error);
+            fetchAll(); // refresh table
+        });
+    </script>
+</body>
+</html>
