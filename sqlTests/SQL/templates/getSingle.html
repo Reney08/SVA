@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Get Zapfstelle</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='getSingle.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Zapfstelle Info</h1>
+    <label for="zapfId">Zapfstelle ID:</label>
+    <input type="number" id="zapfId" placeholder="Enter ID">
+    <button onclick="fetchZapfstelle()">Search</button>
+
+    <div id="result"></div>
+  </div>
+
+    {% include "zapfTable.html" %}
+
+
+  <script>
+    async function fetchZapfstelle() {
+      const id = document.getElementById('zapfId').value;
+      const resultDiv = document.getElementById('result');
+
+      if (!id) {
+        resultDiv.innerHTML = "<p class='error'>Please enter a valid ID.</p>";
+        return;
+      }
+
+      try {
+        const response = await fetch(`/api/Zapfstelle/get?id=${id}`);
+        if (!response.ok) {
+          throw new Error('Not found or server error');
+        }
+
+        const data = await response.json();
+
+        if (data) {
+          resultDiv.innerHTML = `
+            <div class="card">
+              <pre>${JSON.stringify(data, null, 2)}</pre>
+            </div>
+          `;
+        } else {
+          resultDiv.innerHTML = "<p>No data found for this ID.</p>";
+        }
+      } catch (err) {
+        resultDiv.innerHTML = `<p class='error'>Error: ${err.message}</p>`;
+      }
+    }
+  </script>
+</body>
+</html>

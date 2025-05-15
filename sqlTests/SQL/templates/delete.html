@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Zapfstelle löschen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/delete.css') }}">
+</head>
+<body>
+    <h1>Zapfstelle löschen</h1>
+    <form id="deleteForm">
+        <label for="id">ID eingeben:</label>
+        <input type="number" id="id" required>
+        <button type="submit">Löschen</button>
+    </form>
+    <p id="status"></p>
+
+    {% include "zapfTable.html" %}
+
+    <script>
+        document.getElementById('deleteForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('id').value;
+            const res = await fetch(`/api/Zapfstelle/delete?id=${id}`, { method: 'DELETE' });
+            const result = await res.json();
+            document.getElementById('status').innerText = result.status || result.error;
+        });
+    </script>
+</body>
+</html>
