@@ -2,21 +2,24 @@
 from flask import Blueprint, request, jsonify, render_template
 from db_helpers import get_db, get_zapf_db
 
-zapfstelle_bp = Blueprint('zapfstelle', __name__)
+zapfstelle_bp = Blueprint('zapfstelle', __name__, url_prefix='/Zapfstelle')
 
 # -------------------- Seitenrouten --------------------
-
 @zapfstelle_bp.route('/')
-def index():
-    return render_template('index.html')
+def zapfstelle_index():
+    return render_template('zapfstelle_index.html')
 
 @zapfstelle_bp.route('/getAll')
 def show_all():
-    return render_template('getAll.html')
+    return render_template('zapfstelleGetAll.html')
+
+@zapfstelle_bp.route('/get')
+def show_single():
+    return render_template('zapfstelleGetSingle.html')
 
 @zapfstelle_bp.route('/delete')
 def show_delete():
-    return render_template('delete.html')
+    return render_template('zapfstelleDelete.html')
 
 @zapfstelle_bp.route('/setZapfstelle')
 def show_update():
@@ -24,7 +27,7 @@ def show_update():
 
 @zapfstelle_bp.route('/add')
 def show_add():
-    return render_template('add.html')
+    return render_template('zapfstelleAdd.html')
 
 # -------------------- API-Routen --------------------
 
