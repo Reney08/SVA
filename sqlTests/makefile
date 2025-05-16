@@ -5,10 +5,10 @@ DB_SERVICE=db
 DB_USER=vscode
 DB_PASSWORD=Keins123!
 DB_NAME=BarbotDB
-SQL_DUMP=your_dump.sql
+SQL_DUMP=backup.sql
 
 # List all tables you expect after import (space-separated)
-CHECK_TABLES=table1 table2 table3
+CHECK_TABLES=Cocktail Zapfstelle Zutat Rezept
 
 .PHONY: help up up-db up-flask down import-db logs
 
