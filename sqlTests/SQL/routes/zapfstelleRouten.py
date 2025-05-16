@@ -2,9 +2,9 @@
 from flask import Blueprint, request, jsonify, render_template
 from db_helpers import get_db, get_zapf_db
 
+# -------------------- Seitenrouten --------------------
 zapfstelle_bp = Blueprint('zapfstelle', __name__, url_prefix='/Zapfstelle')
 
-# -------------------- Seitenrouten --------------------
 @zapfstelle_bp.route('/')
 def zapfstelle_index():
     return render_template('zapfstelle_index.html')
@@ -30,19 +30,20 @@ def show_add():
     return render_template('zapfstelleAdd.html')
 
 # -------------------- API-Routen --------------------
+zapfstelle_api_bp = Blueprint('zapfstelle', __name__, url_prefix='/api/Zapfstelle')
 
-@zapfstelle_bp.route('/api/Zapfstelle/getAll')
+@zapfstelle_api_bp.route('/getAll')
 def getAll():
     daten = get_zapf_db().getAll()
     return jsonify(daten)
 
-@zapfstelle_bp.route('/api/Zapfstelle/get')
+@zapfstelle_api_bp.route('/api/Zapfstelle/get')
 def getSingle():
     id = request.args.get('id', type=int)
     result = get_zapf_db().getZapfstelle(id)
     return jsonify(result)
 
-@zapfstelle_bp.route('/api/Zapfstelle/add', methods=['POST'])
+@zapfstelle_api_bp.route('/api/Zapfstelle/add', methods=['POST'])
 def add():
     data = request.get_json()
     if not data:
@@ -58,13 +59,13 @@ def add():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@zapfstelle_bp.route('/api/Zapfstelle/delete', methods=['DELETE'])
+@zapfstelle_api_bp.route('/api/Zapfstelle/delete', methods=['DELETE'])
 def delete():
     id = request.args.get('id', type=int)
     get_zapf_db().deleteZapfstelle(id)
     return jsonify({"status": "deleted"})
 
-@zapfstelle_bp.route('/api/Zapfstelle/set', methods=['POST'])
+@zapfstelle_api_bp.route('/api/Zapfstelle/set', methods=['POST'])
 def setZapfstelle():
     data = request.get_json()
     id = data.get("id")
