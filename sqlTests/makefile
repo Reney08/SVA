@@ -10,6 +10,9 @@ SQL_DUMP=backup.sql
 # List all tables you expect after import (space-separated)
 CHECK_TABLES=Cocktail Zapfstelle Zutat Rezept
 
+# The Docker Compose network name (usually <foldername>_default)
+DOCKER_NETWORK=sqltests_default
+
 .PHONY: help up up-db up-flask down import-db logs
 
 help:
@@ -41,7 +44,7 @@ import-db:
 	@missing=0; \
 	for table in $(CHECK_TABLES); do \
 		if ! docker compose -f $(COMPOSE_FILE) exec -T $(DB_SERVICE) \
-			mysql -u$(DB_USER) -p$(DB_PASSWORD) -D$(DB_NAME) -e "SHOW TABLES LIKE '$$table';" | grep -q "$$table"; then \
+			mariadb -u$(DB_USER) -p$(DB_PASSWORD) -D$(DB_NAME) -e "SHOW TABLES LIKE '$$table';" | grep -q "$$table"; then \
 			echo "Table '$$table' is missing."; \
 			missing=1; \
 		fi; \
@@ -50,8 +53,11 @@ import-db:
 		echo "All tables exist. Skipping import."; \
 	else \
 		echo "One or more tables are missing. Importing SQL dump..."; \
-		docker compose -f $(COMPOSE_FILE) exec -T $(DB_SERVICE) \
-			mysql -u$(DB_USER) -p$(DB_PASSWORD) $(DB_NAME) < $(SQL_DUMP); \
+		docker run --rm \
+			--network $(DOCKER_NETWORK) \
+			-v $(PWD):/sql \
+			mariadb:latest \
+			sh -c "mysql -h$(DB_SERVICE) -u$(DB_USER) -p$(DB_PASSWORD) $(DB_NAME) < /sql/$(SQL_DUMP)"; \
 		echo "Import complete."; \
 	fi
 
