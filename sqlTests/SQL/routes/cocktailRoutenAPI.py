@@ -3,7 +3,7 @@
 from flask import Blueprint, request, jsonify, render_template
 from db_helpers import get_db, get_cocktail_db
 
-cocktail_bp = Blueprint('zapfstelle', __name__, ) # hier noch den Routenpräfix
+cocktail_bp = Blueprint('', __name__, ) # hier den Namen und den Routenpräfix hinzufügen
 
 # -------------------- API-Routen --------------------
 '''
