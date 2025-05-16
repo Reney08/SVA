@@ -1,5 +1,5 @@
 # app.py
-from flask import Flask, g
+from flask import Flask, g, render_template
 from routes.zapfstelleRouten import zapfstelle_bp
 
 app = Flask(__name__)
@@ -7,6 +7,10 @@ app = Flask(__name__)
 # Blueprint registrieren
 app.register_blueprint(zapfstelle_bp)
 
+
+@app.route('/')
+def index():
+    return render_template('index.html')
 # -------------------- Close Database connection --------------------
 @app.teardown_appcontext
 def close_db(exception):
