@@ -8,8 +8,9 @@ app = Flask(__name__)
 # Blueprint registrieren
 app.register_blueprint(zapfstelle_bp)
 app.register_blueprint(zapfstelle_api_bp)
-
-
+'''
+hier die beiden neuen blueprints registrieren
+'''
 @app.route('/')
 def index():
     return render_template('index.html')
