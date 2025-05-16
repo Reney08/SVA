@@ -1,11 +1,13 @@
 # app.py
 from flask import Flask, g, render_template
 from routes.zapfstelleRouten import zapfstelle_bp
+from routes.zapfstelleRouten import zapfstelle_api_bp
 
 app = Flask(__name__)
 
 # Blueprint registrieren
 app.register_blueprint(zapfstelle_bp)
+app.register_blueprint(zapfstelle_api_bp)
 
 
 @app.route('/')
