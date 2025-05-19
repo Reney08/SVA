@@ -1,24 +1,41 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>Alle Rezepte</title>
-  <link rel="stylesheet" href="getAll.css">
+    <meta charset="UTF-8">
+    <title>Alle Rezepte</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/getAll.css') }}">
 </head>
 <body>
-  <h1>Alle Rezepte</h1>
-  <button onclick="loadRezepte()">Lade Rezepte</button>
-  <div id="rezepte"></div>
-
-  <script>
-    function loadRezepte() {
-      fetch('/api/Rezept/getAll')
-        .then(res => res.json())
-        .then(data => {
-          const container = document.getElementById('rezepte');
-          container.innerHTML = JSON.stringify(data, null, 2);
-        });
-    }
-  </script>
+    <h1>Alle Rezepte</h1>
+    <div id="rezepte"></div>
+    <script>
+        function fetchAllRezepte() {
+            fetch('/api/Rezept/getAll')
+                .then(res => res.json())
+                .then(data => {
+                    const container = document.getElementById('rezepte');
+                    if (!data.length) {
+                        container.textContent = "Keine Rezepte gefunden.";
+                        return;
+                    }
+                    let html = "<table><tr><th>ID</th><th>Name</th><th>Beschreibung</th><th>Zutaten</th><th>Zubereitung</th></tr>";
+                    data.forEach(row => {
+                        // If your API returns an object for each recipe:
+                        html += `<tr>
+                            <td>${row.ID || row.id || ''}</td>
+                            <td>${row.Name || ''}</td>
+                            <td>${row.Beschreibung || ''}</td>
+                            <td>${row.Zutaten || ''}</td>
+                            <td>${row.Zubereitung || ''}</td>
+                        </tr>`;
+                        // If your API returns arrays, use:
+                        // html += "<tr>" + row.map(cell => `<td>${cell}</td>`).join('') + "</tr>";
+                    });
+                    html += "</table>";
+                    container.innerHTML = html;
+                });
+        }
+        fetchAllRezepte();
+    </script>
 </body>
 </html>
