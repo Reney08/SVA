@@ -1,55 +1,88 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>Rezept hinzufügen</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/add.css') }}">
+    <meta charset="UTF-8">
+    <title>Rezept hinzufügen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/add.css') }}">
 </head>
 <body>
-  <h1>Neues Rezept hinzufügen</h1>
-  <form id="addRezeptForm">
-    <label>Name: <input type="text" id="name" name="Name" required></label><br>
-    <label>Beschreibung:<br>
-      <textarea id="beschreibung" name="Beschreibung" required></textarea>
-    </label><br>
-    <label>Zutaten:<br>
-      <textarea id="zutaten" name="Zutaten" required></textarea>
-    </label><br>
-    <label>Zubereitung:<br>
-      <textarea id="zubereitung" name="Zubereitung" required></textarea>
-    </label><br>
-    <button type="submit">Hinzufügen</button>
-  </form>
-  <p id="statusMessage"></p>
+    <h1>Neues Rezept hinzufügen</h1>
+    <form id="addRezeptForm">
+        <label>Name: <input type="text" id="name" name="Name" required></label><br>
+        <label>Beschreibung:<br>
+            <textarea id="beschreibung" name="Beschreibung" required></textarea>
+        </label><br>
+        <label>Zubereitung:<br>
+            <textarea id="zubereitung" name="Zubereitung" required></textarea>
+        </label><br>
+        <h3>Zutaten</h3>
+        <div id="zutatenList"></div>
+        <button type="button" onclick="addZutatRow()">Zutat hinzufügen</button><br><br>
+        <button type="submit">Hinzufügen</button>
+    </form>
+    <p id="statusMessage"></p>
 
-  <script>
-    document.getElementById('addRezeptForm').addEventListener('submit', function(e) {
-      e.preventDefault();
+    <script>
+        let zutatenOptions = [];
+        // Fetch ingredient options at page load
+        fetch('{{ url_for("rezeptAPI.get_zutaten") }}')
+            .then(res => res.json())
+            .then(zutaten => {
+                zutatenOptions = zutaten;
+                addZutatRow();
+            });
 
-      const payload = {
-        Name: document.getElementById('name').value,
-        Beschreibung: document.getElementById('beschreibung').value,
-        Zutaten: document.getElementById('zutaten').value,
-        Zubereitung: document.getElementById('zubereitung').value
-      };
+        function addZutatRow() {
+            const div = document.createElement('div');
+            div.className = "zutat-row";
+            div.innerHTML = `
+                <select name="zutat" required>
+                    ${zutatenOptions.map(z => `<option value="${z.id}">${z.name}</option>`).join('')}
+                </select>
+                <input type="number" name="menge" placeholder="Menge" min="1" required>
+                <button type="button" onclick="this.parentElement.remove()">Entfernen</button>
+            `;
+            document.getElementById('zutatenList').appendChild(div);
+        }
 
-      fetch('/api/Rezept/add', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(payload)
-      })
-      .then(response => {
-        if (!response.ok) throw new Error('Fehler beim Speichern');
-        return response.json();
-      })
-      .then(data => {
-        document.getElementById('statusMessage').textContent = "✅ Rezept erfolgreich hinzugefügt!";
-        this.reset(); // clear form
-      })
-      .catch(error => {
-        document.getElementById('statusMessage').textContent = "❌ Fehler: " + error.message;
-      });
-    });
-  </script>
+        document.getElementById('addRezeptForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const zutatenRows = document.querySelectorAll('.zutat-row');
+            const zutaten = [];
+            zutatenRows.forEach((row, idx) => {
+                const zutatId = row.querySelector('select[name="zutat"]').value;
+                const menge = row.querySelector('input[name="menge"]').value;
+                zutaten.push({
+                    RezeptPos: idx + 1,
+                    Zutat: parseInt(zutatId),
+                    Menge: parseFloat(menge)
+                });
+            });
+            const payload = {
+                Name: document.getElementById('name').value,
+                Beschreibung: document.getElementById('beschreibung').value,
+                Zubereitung: document.getElementById('zubereitung').value,
+                Zutaten: zutaten
+            };
+            fetch('{{ url_for("rezeptAPI.add") }}', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Fehler beim Speichern');
+                return response.json();
+            })
+            .then(data => {
+                document.getElementById('statusMessage').textContent = "✅ Rezept erfolgreich hinzugefügt!";
+                this.reset();
+                document.getElementById('zutatenList').innerHTML = '';
+                addZutatRow();
+            })
+            .catch(error => {
+                document.getElementById('statusMessage').textContent = "❌ Fehler: " + error.message;
+            });
+        });
+    </script>
 </body>
 </html>
