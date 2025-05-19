@@ -30,4 +30,26 @@
         Name: document.getElementById('name').value,
         Beschreibung: document.getElementById('beschreibung').value,
         Zutaten: document.getElementById('zutaten').value,
-        Zubereitung: document
+        Zubereitung: document.getElementById('zubereitung').value
+      };
+
+      fetch('/api/Rezept/add', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+      })
+      .then(response => {
+        if (!response.ok) throw new Error('Fehler beim Speichern');
+        return response.json();
+      })
+      .then(data => {
+        document.getElementById('statusMessage').textContent = "✅ Rezept erfolgreich hinzugefügt!";
+        this.reset(); // clear form
+      })
+      .catch(error => {
+        document.getElementById('statusMessage').textContent = "❌ Fehler: " + error.message;
+      });
+    });
+  </script>
+</body>
+</html>
