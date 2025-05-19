@@ -1,27 +1,26 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>Rezept löschen</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/delete.css') }}">
+    <meta charset="UTF-8">
+    <title>Rezept löschen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/delete.css') }}">
 </head>
 <body>
-  <h1>Rezept löschen</h1>
-  <form id="deleteForm">
-    <label for="deleteId">Rezept-ID eingeben:</label>
-    <input type="number" id="deleteId" required>
-    <button type="submit">Löschen</button>
-  </form>
-  <p id="status"></p>
-
-  <script>
-    document.getElementById('deleteForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const id = document.getElementById('deleteId').value;
-      const res = await fetch(`/api/Rezept/delete?id=${id}`, { method: 'DELETE' });
-      const result = await res.json();
-      document.getElementById('status').innerText = result.status || result.error || "Unbekannter Fehler";
-    });
-  </script>
+    <h1>Rezept löschen</h1>
+    <form id="deleteForm">
+        <label for="deleteId">Rezept-ID eingeben:</label>
+        <input type="number" id="deleteId" required>
+        <button type="submit">Löschen</button>
+    </form>
+    <p id="status"></p>
+    <script>
+        document.getElementById('deleteForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const id = document.getElementById('deleteId').value;
+            const res = await fetch('{{ url_for("rezeptAPI.delete") }}?id=' + id, { method: 'DELETE' });
+            const result = await res.json();
+            document.getElementById('status').innerText = result.status || result.error || "Unbekannter Fehler";
+        });
+    </script>
 </body>
 </html>
