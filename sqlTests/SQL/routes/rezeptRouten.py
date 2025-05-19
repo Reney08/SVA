@@ -21,10 +21,6 @@ def show_single():
 def show_delete():
     return render_template('rezeptDelete.html')
 
-@rezept_bp.route('/setRezept')  
-def show_update():
-    return render_template('setRezept.html')
-
 @rezept_bp.route('/add')
 def show_add():
     return render_template('rezeptAdd.html')
