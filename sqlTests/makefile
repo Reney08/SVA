@@ -1,20 +1,20 @@
 # Makefile for managing Docker Compose services and DB import
 
-COMPOSE_FILE=docker-compose.yml
-DB_SERVICE=db
-DB_USER=vscode
-DB_PASSWORD=Keins123!
-DB_NAME=BarbotDB
-SQL_DUMP=backup.sql
-SQL_TESTDATA=testdata.sql
+COMPOSE_FILE = docker-compose.yml
+DB_SERVICE   = db
+DB_USER      = vscode
+DB_PASSWORD ?= Keins123!
+DB_NAME      = BarbotDB
+SQL_DUMP    ?= backup.sql
+SQL_TESTDATA?= testdata.sql
 
 # List all tables you expect after import (space-separated)
-CHECK_TABLES=Cocktail Zapfstelle Zutat Rezept
+CHECK_TABLES = Cocktail Zapfstelle Zutat Rezept
 
-# The Docker Compose network name (usually <foldername>_default)
-DOCKER_NETWORK=sqltests_default
+# The Docker Compose network name (adjust if needed)
+DOCKER_NETWORK ?= sqltests_default
 
-.PHONY: help up up-nocache up-all up-db up-flask down import-db import-testdata logs
+.PHONY: help up up-nocache up-all up-db up-flask down import-db import-testdata logs status _up_main
 
 help:
 	@echo "Usage:"
@@ -27,6 +27,7 @@ help:
 	@echo "  make import-db       # Import SQL dump into MariaDB if not already imported"
 	@echo "  make import-testdata # Import testdata into MariaDB if tables exist"
 	@echo "  make logs            # Show logs for all containers"
+	@echo "  make status          # Show container status"
 
 up: up-all import-db import-testdata
 	@echo "All services are up and database is initialized (if needed)."
@@ -51,12 +52,22 @@ up-flask:
 down:
 	docker compose -f $(COMPOSE_FILE) down
 
-import-db:
+# Wait for DB to be ready
+wait-db:
+	@echo "Waiting for database to be ready..."
+	@retries=10; until docker compose -f $(COMPOSE_FILE) exec -T $(DB_SERVICE) \
+		mariadb -u$(DB_USER) -p$(DB_PASSWORD) -e "SELECT 1;" >/dev/null 2>&1 || [ $$retries -eq 0 ]; do \
+		echo "Waiting..."; \
+		sleep 3; \
+		retries=`expr $$retries - 1`; \
+	done
+
+import-db: wait-db
 	@echo "Checking if database import is needed..."
 	@missing=0; \
 	for table in $(CHECK_TABLES); do \
 		if ! docker compose -f $(COMPOSE_FILE) exec -T $(DB_SERVICE) \
-			mariadb -u$(DB_USER) -p$(DB_PASSWORD) -D$(DB_NAME) -e "SHOW TABLES LIKE '$$table';" | grep -q "$$table"; then \
+			mariadb -u$(DB_USER) -p$(DB_PASSWORD) -D$(DB_NAME) -e "SHOW TABLES LIKE '$$table';" | grep -q "^$$table$$"; then \
 			echo "Table '$$table' is missing."; \
 			missing=1; \
 		fi; \
@@ -69,16 +80,16 @@ import-db:
 			--network $(DOCKER_NETWORK) \
 			-v $(PWD):/sql \
 			mariadb:latest \
-			sh -c "mysql -h$(DB_SERVICE) -u$(DB_USER) -p$(DB_PASSWORD) $(DB_NAME) < /sql/$(SQL_DUMP)"; \
+			sh -c "set -e; mysql -h$(DB_SERVICE) -u$(DB_USER) -p$(DB_PASSWORD) $(DB_NAME) < /sql/$(SQL_DUMP)"; \
 		echo "Import complete."; \
 	fi
 
-import-testdata:
+import-testdata: wait-db
 	@echo "Checking if testdata import is needed..."
 	@missing=0; \
 	for table in $(CHECK_TABLES); do \
 		if ! docker compose -f $(COMPOSE_FILE) exec -T $(DB_SERVICE) \
-			mariadb -u$(DB_USER) -p$(DB_PASSWORD) -D$(DB_NAME) -e "SHOW TABLES LIKE '$$table';" | grep -q "$$table"; then \
+			mariadb -u$(DB_USER) -p$(DB_PASSWORD) -D$(DB_NAME) -e "SHOW TABLES LIKE '$$table';" | grep -q "^$$table$$"; then \
 			echo "Table '$$table' is missing."; \
 			missing=1; \
 		fi; \
@@ -89,7 +100,7 @@ import-testdata:
 			--network $(DOCKER_NETWORK) \
 			-v $(PWD):/sql \
 			mariadb:latest \
-			sh -c "mysql -h$(DB_SERVICE) -u$(DB_USER) -p$(DB_PASSWORD) $(DB_NAME) < /sql/$(SQL_TESTDATA)"; \
+			sh -c "set -e; mysql -h$(DB_SERVICE) -u$(DB_USER) -p$(DB_PASSWORD) $(DB_NAME) < /sql/$(SQL_TESTDATA)"; \
 		echo "Testdata import complete."; \
 	else \
 		echo "One or more tables are missing. Please create the schema first."; \
@@ -97,3 +108,6 @@ import-testdata:
 
 logs:
 	docker compose -f $(COMPOSE_FILE) logs -f
+
+status:
+	docker compose -f $(COMPOSE_FILE) ps
