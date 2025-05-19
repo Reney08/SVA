@@ -2,16 +2,16 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>Rezept Aktionen</title>
+    <title>Rezept API Tools</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
 </head>
 <body>
-  <h1>Wähle eine Aktion</h1>
-  <ul>
-    <li><a href="/Rezept/getAll">Alle Rezepte anzeigen</a></li>
-    <li><a href="/Rezept/get">Ein Rezept anzeigen</a></li>
-    <li><a href="/Rezept/add">Rezept hinzufügen</a></li>
-    <li><a href="/Rezept/delete">Rezept löschen</a></li>
-  </ul>
+    <h1>Rezept API - Tools Übersicht</h1>
+    <div class="tool-buttons">
+        <a href="{{ url_for('rezeptAPI.get_all') }}"><button>Alle Rezepte anzeigen</button></a>
+        <a href="{{ url_for('rezeptAPI.get_single') }}"><button>Ein Rezept anzeigen</button></a>
+        <a href="{{ url_for('rezeptAPI.add') }}"><button>Rezept hinzufügen</button></a>
+        <a href="{{ url_for('rezeptAPI.delete') }}"><button>Rezept löschen</button></a>
+    </div>
 </body>
 </html>
