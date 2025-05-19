@@ -16,13 +16,13 @@
                     document.getElementById('rezepte').textContent = "Keine Rezepte gefunden.";
                     return;
                 }
-                let html = "<table><tr><th>ID</th><th>Name</th><th>Beschreibung</th><th>Zubereitung</th><th>Zutaten</th></tr>";
+                let html = "<table><tr><th>ID</th><th>Name</th><th>Beschreibung</th><th>Link</th><th>Zutaten</th></tr>";
                 data.forEach(rezept => {
                     html += `<tr>
-                        <td>${rezept.ID}</td>
+                        <td>${rezept.CocktailID}</td>
                         <td>${rezept.Name}</td>
-                        <td>${rezept.Beschreibung}</td>
-                        <td>${rezept.Zubereitung}</td>
+                        <td>${rezept.Beschreibung || ''}</td>
+                        <td>${rezept.ExtLink ? `<a href="${rezept.ExtLink}" target="_blank">Link</a>` : ''}</td>
                         <td><ul>${rezept.Zutaten.map(z => `<li>${z.Menge} ${z.ZutatName}</li>`).join('')}</ul></td>
                     </tr>`;
                 });
