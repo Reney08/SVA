@@ -14,18 +14,30 @@ CHECK_TABLES=Cocktail Zapfstelle Zutat Rezept
 # The Docker Compose network name (usually <foldername>_default)
 DOCKER_NETWORK=sqltests_default
 
-.PHONY: help up up-db up-flask down import-db logs
+.PHONY: help up up-all up-db up-flask down import-db import-testdata logs --no-cache
 
 help:
 	@echo "Usage:"
-	@echo "  make up         # Start all containers and import DB if needed"
-	@echo "  make up-db      # Start only the db container"
-	@echo "  make up-flask   # Start only the flask container (db must be up)"
-	@echo "  make down       # Stop all containers"
-	@echo "  make import-db  # Import SQL dump into MariaDB if not already imported"
-	@echo "  make logs       # Show logs for all containers"
+	@echo "  make up              # Start all containers and import DB if needed"
+	@echo "  make up --no-cache   # Build images from scratch, then start and import"
+	@echo "  make up-all          # Start all containers (no import)"
+	@echo "  make up-db           # Start only the db container"
+	@echo "  make up-flask        # Start only the flask container (db must be up)"
+	@echo "  make down            # Stop all containers"
+	@echo "  make import-db       # Import SQL dump into MariaDB if not already imported"
+	@echo "  make import-testdata # Import testdata into MariaDB if tables exist"
+	@echo "  make logs            # Show logs for all containers"
 
-up: up-all import-db import-testdata
+up:
+ifeq ($(findstring --no-cache,$(MAKECMDGOALS)),--no-cache)
+	@echo "Building images with --no-cache..."
+	docker compose -f $(COMPOSE_FILE) build --no-cache
+	@$(MAKE) _up_main
+else
+	@$(MAKE) _up_main
+endif
+
+_up_main: up-all import-db import-testdata
 	@echo "All services are up and database is initialized (if needed)."
 
 up-all:
@@ -78,12 +90,15 @@ import-testdata:
 			--network $(DOCKER_NETWORK) \
 			-v $(PWD):/sql \
 			mariadb:latest \
-			sh -c "mysql -h$(DB_SERVICE) -u$(DB_USER) -p$(DB_PASSWORD) $(DB_NAME) < /sql/testdata.sql"; \
+			sh -c "mysql -h$(DB_SERVICE) -u$(DB_USER) -p$(DB_PASSWORD) $(DB_NAME) < /sql/$(SQL_TESTDATA)"; \
 		echo "Testdata import complete."; \
 	else \
 		echo "One or more tables are missing. Please create the schema first."; \
 	fi
 
-
 logs:
 	docker compose -f $(COMPOSE_FILE) logs -f
+
+# This dummy target prevents make from treating --no-cache as a file/command
+--no-cache:
+	@:
