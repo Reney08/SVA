@@ -3,8 +3,8 @@ from flask import Flask, g, render_template
 
 from routes.zapfstelleRouten import zapfstelle_bp
 from routes.zapfstelleRoutenAPI import zapfstelle_api_bp
-from routes.cocktailRouten import rezept_bp
-from routes.cocktailRoutenAPI import rezept_api_bp
+from routes.rezeptRouten import rezept_bp
+from routes.rezeptRoutenAPI import rezept_api_bp
 
 app = Flask(__name__)
 
