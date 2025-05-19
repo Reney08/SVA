@@ -2,6 +2,8 @@
 from flask import g
 from datenbankconnector import DatenbankConnector
 from zapfstelleDatenbank import ZapfstelleDatenbank
+from cocktailDatenbank import CocktailDatenbank
+from rezeptDatenbank import RezeptDatenbank
 
 def get_db():
     if 'db' not in g:
@@ -21,10 +23,10 @@ def get_zapf_db():
 
 def get_cocktail_db():
     if 'cocktail_db' not in g:
-        g.cocktail_db = DatenbankConnector(get_cocktail_db())
+        g.cocktail_db = CocktailDatenbank(get_db())
     return g.cocktail_db
 
 def ge_rezept_db():
     if 'rezept_db' not in g:
-        g.rezept_db = DatenbankConnector(get_cocktail_db())
+        g.rezept_db = RezeptDatenbank(get_db())
     return g.rezept_db
