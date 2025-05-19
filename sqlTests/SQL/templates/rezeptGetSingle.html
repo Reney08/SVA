@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Rezept anzeigen</title>
-  <link rel="stylesheet" href="get.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/get.css') }}">
 </head>
 <body>
   <h1>Einzelnes Rezept abrufen</h1>
@@ -14,10 +14,40 @@
   <script>
     function getRezept() {
       const id = document.getElementById('rezeptId').value;
+      const output = document.getElementById('output');
+      output.innerHTML = ""; // Clear previous output
+
+      if (!id) {
+        output.innerHTML = "<p class='error'>Bitte eine gültige Rezept-ID eingeben.</p>";
+        return;
+      }
+
       fetch(`/api/Rezept/get?id=${id}`)
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) throw new Error('Nicht gefunden oder Serverfehler');
+          return res.json();
+        })
         .then(data => {
-          document.getElementById('output').innerText = JSON.stringify(data, null, 2);
+          // If data is null/empty, show message
+          if (!data || (Array.isArray(data) && data.length === 0)) {
+            output.innerHTML = "<p>Kein Rezept mit dieser ID gefunden.</p>";
+            return;
+          }
+          // If your API returns an array, use the first element
+          const rezept = Array.isArray(data) ? data[0] : data;
+          let html = "<table><tr><th>ID</th><th>Name</th><th>Beschreibung</th><th>Zutaten</th><th>Zubereitung</th></tr>";
+          html += `<tr>
+            <td>${rezept.ID || rezept.id || ''}</td>
+            <td>${rezept.Name || ''}</td>
+            <td>${rezept.Beschreibung || ''}</td>
+            <td>${rezept.Zutaten || ''}</td>
+            <td>${rezept.Zubereitung || ''}</td>
+          </tr>`;
+          html += "</table>";
+          output.innerHTML = html;
+        })
+        .catch(err => {
+          output.innerHTML = `<p class='error'>Fehler: ${err.message}</p>`;
         });
     }
   </script>
