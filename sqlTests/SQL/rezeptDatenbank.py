@@ -15,7 +15,7 @@ class RezeptDatenbank:
         return result
 
     def addCocktail(self, Name: str, Beschreibung: str, Zubereitung: str) -> int:
-        """Adds a new cocktail and returns its ID (RezeptNR)."""
+        """Adds a new cocktail and returns its ID (CocktailID)."""
         if self.connector.conn is None:
             self.connector.connect()
         cur = self.connector.conn.cursor()
@@ -24,18 +24,18 @@ class RezeptDatenbank:
             (Name, Beschreibung, Zubereitung)
         )
         self.connector.conn.commit()
-        rezeptnr = cur.lastrowid
+        cocktail_id = cur.lastrowid
         cur.close()
-        return rezeptnr
+        return cocktail_id
 
-    def addRezept(self, RezeptNR: int, RezeptPos: int, Zutat: int, Menge: float):
+    def addRezept(self, CocktailID: int, RezeptPos: int, ZutatID: int, Menge: float):
         """Adds a single ingredient to a recipe (Rezept table)."""
         if self.connector.conn is None:
             self.connector.connect()
         cur = self.connector.conn.cursor()
         cur.execute(
-            "INSERT INTO Rezept (RezeptNR, RezeptPos, Zutat, Menge) VALUES (?, ?, ?, ?)",
-            (RezeptNR, RezeptPos, Zutat, Menge)
+            "INSERT INTO Rezept (CocktailID, RezeptPos, ZutatID, Menge) VALUES (?, ?, ?, ?)",
+            (CocktailID, RezeptPos, ZutatID, Menge)
         )
         self.connector.conn.commit()
         cur.close()
@@ -49,8 +49,8 @@ class RezeptDatenbank:
             SELECT c.ID, c.Name, c.Beschreibung, c.Zubereitung,
                    r.RezeptPos, r.Menge, z.ID, z.Name
             FROM Cocktail c
-            JOIN Rezept r ON c.ID = r.RezeptNR
-            JOIN Zutat z ON r.Zutat = z.ID
+            JOIN Rezept r ON c.ID = r.CocktailID
+            JOIN Zutat z ON r.ZutatID = z.ID
             ORDER BY c.ID, r.RezeptPos
         """)
         rows = cur.fetchall()
@@ -75,7 +75,7 @@ class RezeptDatenbank:
             })
         return list(rezepte.values())
 
-    def getRezeptWithIngredients(self, rezeptnr: int):
+    def getRezeptWithIngredients(self, cocktail_id: int):
         """Returns a single cocktail with its ingredients."""
         if self.connector.conn is None:
             self.connector.connect()
@@ -84,11 +84,11 @@ class RezeptDatenbank:
             SELECT c.ID, c.Name, c.Beschreibung, c.Zubereitung,
                    r.RezeptPos, r.Menge, z.ID, z.Name
             FROM Cocktail c
-            JOIN Rezept r ON c.ID = r.RezeptNR
-            JOIN Zutat z ON r.Zutat = z.ID
+            JOIN Rezept r ON c.ID = r.CocktailID
+            JOIN Zutat z ON r.ZutatID = z.ID
             WHERE c.ID = ?
             ORDER BY r.RezeptPos
-        """, (rezeptnr,))
+        """, (cocktail_id,))
         rows = cur.fetchall()
         cur.close()
         if not rows:
@@ -109,14 +109,14 @@ class RezeptDatenbank:
             })
         return rezept
 
-    def deleteRezept(self, rezeptnr: int):
+    def deleteRezept(self, cocktail_id: int):
         """Deletes a cocktail and all its recipe entries."""
         if self.connector.conn is None:
             self.connector.connect()
         cur = self.connector.conn.cursor()
         # Delete all Rezept rows for this cocktail
-        cur.execute("DELETE FROM Rezept WHERE RezeptNR = ?", (rezeptnr,))
+        cur.execute("DELETE FROM Rezept WHERE CocktailID = ?", (cocktail_id,))
         # Delete the cocktail itself
-        cur.execute("DELETE FROM Cocktail WHERE ID = ?", (rezeptnr,))
+        cur.execute("DELETE FROM Cocktail WHERE ID = ?", (cocktail_id,))
         self.connector.conn.commit()
         cur.close()
