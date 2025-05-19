@@ -25,7 +25,7 @@ help:
 	@echo "  make import-db  # Import SQL dump into MariaDB if not already imported"
 	@echo "  make logs       # Show logs for all containers"
 
-up: up-all import-db import_testdata
+up: up-all import-db import-testdata
 	@echo "All services are up and database is initialized (if needed)."
 
 up-all:
