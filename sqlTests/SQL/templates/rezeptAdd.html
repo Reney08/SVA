@@ -3,39 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <title>Rezept hinzufügen</title>
-  <link rel="stylesheet" href="add.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/add.css') }}">
 </head>
 <body>
   <h1>Neues Rezept hinzufügen</h1>
-  <form onsubmit="addRezept(event)">
-    <input placeholder="Name" id="name"><br>
-    <textarea placeholder="Beschreibung" id="beschreibung"></textarea><br>
-    <textarea placeholder="Zutaten" id="zutaten"></textarea><br>
-    <textarea placeholder="Zubereitung" id="zubereitung"></textarea><br>
+  <form id="addRezeptForm">
+    <label>Name: <input type="text" id="name" name="Name" required></label><br>
+    <label>Beschreibung:<br>
+      <textarea id="beschreibung" name="Beschreibung" required></textarea>
+    </label><br>
+    <label>Zutaten:<br>
+      <textarea id="zutaten" name="Zutaten" required></textarea>
+    </label><br>
+    <label>Zubereitung:<br>
+      <textarea id="zubereitung" name="Zubereitung" required></textarea>
+    </label><br>
     <button type="submit">Hinzufügen</button>
   </form>
-  <div id="result"></div>
+  <p id="statusMessage"></p>
 
   <script>
-    function addRezept(event) {
-      event.preventDefault();
+    document.getElementById('addRezeptForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
       const payload = {
         Name: document.getElementById('name').value,
         Beschreibung: document.getElementById('beschreibung').value,
         Zutaten: document.getElementById('zutaten').value,
-        Zubereitung: document.getElementById('zubereitung').value,
-      };
-
-      fetch('/api/Rezept/add', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(payload)
-      })
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById('result').innerText = JSON.stringify(data);
-      });
-    }
-  </script>
-</body>
-</html>
+        Zubereitung: document
