@@ -16,7 +16,7 @@ INSERT INTO Zutat (Name, Zapfstelle, Alkohol) VALUES
   ('Tonic Water', 3, true);
 
 -- Cocktail
-INSERT INTO Cocktail (Name, Beschreibung, LINK) VALUES
+INSERT INTO Cocktail (Name, Beschreibung, ExtLink) VALUES
   ('Mojito', 'Ein erfrischender kubanischer Cocktail mit Minze und Limette.', 'https://example.com/mojito'),
   ('Caipirinha', 'Brasilianischer Cocktail mit Limette und Cachaça.', 'https://example.com/caipirinha'),
   ('Gin Tonic', 'Klassischer Longdrink mit Gin und Tonic Water.', 'https://example.com/gin-tonic');
