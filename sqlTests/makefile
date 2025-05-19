@@ -14,12 +14,12 @@ CHECK_TABLES=Cocktail Zapfstelle Zutat Rezept
 # The Docker Compose network name (usually <foldername>_default)
 DOCKER_NETWORK=sqltests_default
 
-.PHONY: help up up-all up-db up-flask down import-db import-testdata logs --no-cache
+.PHONY: help up up-nocache up-all up-db up-flask down import-db import-testdata logs
 
 help:
 	@echo "Usage:"
 	@echo "  make up              # Start all containers and import DB if needed"
-	@echo "  make up --no-cache   # Build images from scratch, then start and import"
+	@echo "  make up-nocache      # Build images from scratch, then start and import"
 	@echo "  make up-all          # Start all containers (no import)"
 	@echo "  make up-db           # Start only the db container"
 	@echo "  make up-flask        # Start only the flask container (db must be up)"
@@ -28,14 +28,13 @@ help:
 	@echo "  make import-testdata # Import testdata into MariaDB if tables exist"
 	@echo "  make logs            # Show logs for all containers"
 
-up:
-ifeq ($(findstring --no-cache,$(MAKECMDGOALS)),--no-cache)
+up: up-all import-db import-testdata
+	@echo "All services are up and database is initialized (if needed)."
+
+up-nocache:
 	@echo "Building images with --no-cache..."
 	docker compose -f $(COMPOSE_FILE) build --no-cache
 	@$(MAKE) _up_main
-else
-	@$(MAKE) _up_main
-endif
 
 _up_main: up-all import-db import-testdata
 	@echo "All services are up and database is initialized (if needed)."
@@ -98,7 +97,3 @@ import-testdata:
 
 logs:
 	docker compose -f $(COMPOSE_FILE) logs -f
-
-# This dummy target prevents make from treating --no-cache as a file/command
---no-cache:
-	@:
