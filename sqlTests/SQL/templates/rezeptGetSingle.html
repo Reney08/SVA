@@ -1,55 +1,46 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-  <meta charset="UTF-8">
-  <title>Rezept anzeigen</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='css/get.css') }}">
+    <meta charset="UTF-8">
+    <title>Rezept anzeigen</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/get.css') }}">
 </head>
 <body>
-  <h1>Einzelnes Rezept abrufen</h1>
-  <input type="number" id="rezeptId" placeholder="Rezept-ID">
-  <button onclick="getRezept()">Anzeigen</button>
-  <div id="output"></div>
+    <h1>Einzelnes Rezept abrufen</h1>
+    <input type="number" id="rezeptId" placeholder="Rezept-ID">
+    <button onclick="getRezept()">Anzeigen</button>
+    <div id="output"></div>
 
-  <script>
-    function getRezept() {
-      const id = document.getElementById('rezeptId').value;
-      const output = document.getElementById('output');
-      output.innerHTML = ""; // Clear previous output
-
-      if (!id) {
-        output.innerHTML = "<p class='error'>Bitte eine gültige Rezept-ID eingeben.</p>";
-        return;
-      }
-
-      fetch(`/api/Rezept/get?id=${id}`)
-        .then(res => {
-          if (!res.ok) throw new Error('Nicht gefunden oder Serverfehler');
-          return res.json();
-        })
-        .then(data => {
-          // If data is null/empty, show message
-          if (!data || (Array.isArray(data) && data.length === 0)) {
-            output.innerHTML = "<p>Kein Rezept mit dieser ID gefunden.</p>";
-            return;
-          }
-          // If your API returns an array, use the first element
-          const rezept = Array.isArray(data) ? data[0] : data;
-          let html = "<table><tr><th>ID</th><th>Name</th><th>Beschreibung</th><th>Zutaten</th><th>Zubereitung</th></tr>";
-          html += `<tr>
-            <td>${rezept.ID || rezept.id || ''}</td>
-            <td>${rezept.Name || ''}</td>
-            <td>${rezept.Beschreibung || ''}</td>
-            <td>${rezept.Zutaten || ''}</td>
-            <td>${rezept.Zubereitung || ''}</td>
-          </tr>`;
-          html += "</table>";
-          output.innerHTML = html;
-        })
-        .catch(err => {
-          output.innerHTML = `<p class='error'>Fehler: ${err.message}</p>`;
-        });
-    }
-  </script>
+    <script>
+        function getRezept() {
+            const id = document.getElementById('rezeptId').value;
+            const output = document.getElementById('output');
+            output.innerHTML = "";
+            if (!id) {
+                output.innerHTML = "<p class='error'>Bitte eine gültige Rezept-ID eingeben.</p>";
+                return;
+            }
+            fetch('{{ url_for("rezeptAPI.get_single") }}?id=' + id)
+                .then(res => {
+                    if (!res.ok) throw new Error('Nicht gefunden oder Serverfehler');
+                    return res.json();
+                })
+                .then(rezept => {
+                    if (!rezept || rezept.error) {
+                        output.innerHTML = "<p>Kein Rezept mit dieser ID gefunden.</p>";
+                        return;
+                    }
+                    let html = `<h2>${rezept.Name}</h2>
+                        <p><strong>Beschreibung:</strong> ${rezept.Beschreibung}</p>
+                        <p><strong>Zubereitung:</strong> ${rezept.Zubereitung}</p>
+                        <h3>Zutaten:</h3>
+                        <ul>${rezept.Zutaten.map(z => `<li>${z.Menge} ${z.ZutatName}</li>`).join('')}</ul>`;
+                    output.innerHTML = html;
+                })
+                .catch(err => {
+                    output.innerHTML = `<p class='error'>Fehler: ${err.message}</p>`;
+                });
+        }
+    </script>
 </body>
 </html>
