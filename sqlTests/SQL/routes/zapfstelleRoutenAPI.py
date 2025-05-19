@@ -2,9 +2,9 @@
 from flask import Blueprint, request, jsonify, render_template
 from db_helpers import get_db, get_zapf_db
 
-# -------------------- API-Routen --------------------
 zapfstelle_api_bp = Blueprint('zapfstelleAPI', __name__, url_prefix='/api/Zapfstelle')
 
+# -------------------- API-Routen --------------------
 @zapfstelle_api_bp.route('/getAll')
 def getAll():
     daten = get_zapf_db().getAll()

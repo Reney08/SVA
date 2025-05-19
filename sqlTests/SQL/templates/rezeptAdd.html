@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Rezept hinzufügen</title>
+  <link rel="stylesheet" href="add.css">
+</head>
+<body>
+  <h1>Neues Rezept hinzufügen</h1>
+  <form onsubmit="addRezept(event)">
+    <input placeholder="Name" id="name"><br>
+    <textarea placeholder="Beschreibung" id="beschreibung"></textarea><br>
+    <textarea placeholder="Zutaten" id="zutaten"></textarea><br>
+    <textarea placeholder="Zubereitung" id="zubereitung"></textarea><br>
+    <button type="submit">Hinzufügen</button>
+  </form>
+  <div id="result"></div>
+
+  <script>
+    function addRezept(event) {
+      event.preventDefault();
+      const payload = {
+        Name: document.getElementById('name').value,
+        Beschreibung: document.getElementById('beschreibung').value,
+        Zutaten: document.getElementById('zutaten').value,
+        Zubereitung: document.getElementById('zubereitung').value,
+      };
+
+      fetch('/api/Rezept/add', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(payload)
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('result').innerText = JSON.stringify(data);
+      });
+    }
+  </script>
+</body>
+</html>

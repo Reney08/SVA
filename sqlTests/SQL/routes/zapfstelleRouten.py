@@ -2,9 +2,9 @@
 from flask import Blueprint, request, jsonify, render_template
 from db_helpers import get_db, get_zapf_db
 
-# -------------------- Seitenrouten --------------------
 zapfstelle_bp = Blueprint('zapfstelle', __name__, url_prefix='/Zapfstelle')
 
+# -------------------- Seitenrouten --------------------
 @zapfstelle_bp.route('/')
 def zapfstelle_index():
     return render_template('zapfstelle_index.html')

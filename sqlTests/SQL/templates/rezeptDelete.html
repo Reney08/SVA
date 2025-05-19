@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Rezept löschen</title>
+  <link rel="stylesheet" href="delete.css">
+</head>
+<body>
+  <h1>Rezept löschen</h1>
+  <input type="number" id="deleteId" placeholder="Rezept-ID">
+  <button onclick="deleteRezept()">Löschen</button>
+  <div id="feedback"></div>
+
+  <script>
+    function deleteRezept() {
+      const id = document.getElementById('deleteId').value;
+      fetch(`/api/Rezept/delete?id=${id}`, { method: 'DELETE' })
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('feedback').innerText = JSON.stringify(data);
+        });
+    }
+  </script>
+</body>
+</html>

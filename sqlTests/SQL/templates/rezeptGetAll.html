@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Alle Rezepte</title>
+  <link rel="stylesheet" href="getAll.css">
+</head>
+<body>
+  <h1>Alle Rezepte</h1>
+  <button onclick="loadRezepte()">Lade Rezepte</button>
+  <div id="rezepte"></div>
+
+  <script>
+    function loadRezepte() {
+      fetch('/api/Rezept/getAll')
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById('rezepte');
+          container.innerHTML = JSON.stringify(data, null, 2);
+        });
+    }
+  </script>
+</body>
+</html>

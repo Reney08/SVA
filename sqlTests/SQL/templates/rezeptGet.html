@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Rezept anzeigen</title>
+  <link rel="stylesheet" href="get.css">
+</head>
+<body>
+  <h1>Einzelnes Rezept abrufen</h1>
+  <input type="number" id="rezeptId" placeholder="Rezept-ID">
+  <button onclick="getRezept()">Anzeigen</button>
+  <div id="output"></div>
+
+  <script>
+    function getRezept() {
+      const id = document.getElementById('rezeptId').value;
+      fetch(`/api/Rezept/get?id=${id}`)
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('output').innerText = JSON.stringify(data, null, 2);
+        });
+    }
+  </script>
+</body>
+</html>

@@ -13,7 +13,6 @@ class ZapfstelleDatenbank:
         cur.close()
         return result
     
-    #TODO id kommt von Usereingabe
     def getZapfstelle(self, id: int):
         if self.connector.conn is None:
             self.connector.connect()
@@ -23,7 +22,6 @@ class ZapfstelleDatenbank:
         cur.close()
         return result
     
-    #TODO Usereingabe im Switch case
     def setZapfstelle(self, input: int):
         match input:
             case "1":
@@ -35,7 +33,6 @@ class ZapfstelleDatenbank:
             case "14":
                 self.updateFuellmenge(1, 100)
     
-    #TODO Usereingebe für werte
     def addZapfstelle(self, SchienenPos: int, Pumpe: bool, PumpenNR: int, Fuellmenge: int):
         if self.connector.conn is None:
             self.connector.connect()
@@ -44,7 +41,6 @@ class ZapfstelleDatenbank:
         self.connector.conn.commit()
         cur.close()
         
-    #TODO id kommt von Usereingabe
     def deleteZapfstelle(self, id: int):
         if self.connector.conn is None:
             self.connector.connect()
@@ -84,22 +80,3 @@ class ZapfstelleDatenbank:
         cur.execute("UPDATE Zapfstelle SET Fuellmenge = ? WHERE ZapfstelleID = ?", (Fuellmenge, id))
         self.connector.conn.commit()
         cur.close()
-
-if __name__ == "__main__":
-    connector = DatenbankConnector(
-        user="barbot",
-        password="Keins123!",
-        host="10.22.41.18",
-        database="BarbotDB",
-        port=3306
-    )
-    
-    connector.connect()
-    zapf_db = ZapfstelleDatenbank(connector)
-    # daten = zapf_db.addZapfstelle(1, True, 2, 100)1
-    userinput = input("Was möchten Sie tun?\n1. SchienenPos ändern\n2. Pumpenstatus ändern\n3. PumpenNummer ändern\n4. Fuellmengen ändern\n")
-    zapf_db.setZapfstelle(userinput)
-    daten = zapf_db.getAll()
-    for row in daten:
-        print(row)
-    connector.close()

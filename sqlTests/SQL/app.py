@@ -1,13 +1,19 @@
 # app.py
 from flask import Flask, g, render_template
+
 from routes.zapfstelleRouten import zapfstelle_bp
 from routes.zapfstelleRoutenAPI import zapfstelle_api_bp
+from routes.cocktailRouten import rezept_bp
+from routes.cocktailRoutenAPI import rezept_api_bp
 
 app = Flask(__name__)
 
 # Blueprint registrieren
 app.register_blueprint(zapfstelle_bp)
 app.register_blueprint(zapfstelle_api_bp)
+
+app.register_blueprint(rezept_bp)
+app.register_blueprint(rezept_api_bp)
 '''
 hier die beiden neuen blueprints registrieren
 '''
