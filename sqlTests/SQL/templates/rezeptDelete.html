@@ -20,4 +20,8 @@
       const id = document.getElementById('deleteId').value;
       const res = await fetch(`/api/Rezept/delete?id=${id}`, { method: 'DELETE' });
       const result = await res.json();
-      document.getElementById('status').innerText =
+      document.getElementById('status').innerText = result.status || result.error || "Unbekannter Fehler";
+    });
+  </script>
+</body>
+</html>
