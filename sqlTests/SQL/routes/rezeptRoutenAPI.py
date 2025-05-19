@@ -1,4 +1,4 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, render_template
 from db_helpers import ge_rezept_db
 
 rezept_api_bp = Blueprint('rezeptAPI', __name__, url_prefix='/api/Rezept')
@@ -23,10 +23,10 @@ def get_all():
 @rezept_api_bp.route('/get')
 def get_single():
     """Return a single recipe with its ingredients."""
-    rezeptnr = request.args.get('id', type=int)
-    if rezeptnr is None:
+    cocktail_id = request.args.get('id', type=int)
+    if cocktail_id is None:
         return jsonify({"error": "Missing id parameter"}), 400
-    rezept = ge_rezept_db().getRezeptWithIngredients(rezeptnr)
+    rezept = ge_rezept_db().getRezeptWithIngredients(cocktail_id)
     if rezept is None:
         return jsonify({"error": "Rezept not found"}), 404
     return jsonify(rezept)
@@ -38,16 +38,16 @@ def add():
     if not data:
         return jsonify({"error": "No JSON received"}), 400
     try:
-        rezeptnr = ge_rezept_db().addCocktail(
+        cocktail_id = ge_rezept_db().addCocktail(
             Name=data['Name'],
             Beschreibung=data['Beschreibung'],
-            Zubereitung=data['Zubereitung']
+            Zubereitung=data.get('Zubereitung', '')
         )
         for z in data['Zutaten']:
             ge_rezept_db().addRezept(
-                RezeptNR=rezeptnr,
+                CocktailID=cocktail_id,
                 RezeptPos=z['RezeptPos'],
-                Zutat=z['Zutat'],
+                ZutatID=z['ZutatID'],
                 Menge=z['Menge']
             )
         return jsonify({"status": "added"})
@@ -57,8 +57,8 @@ def add():
 @rezept_api_bp.route('/delete', methods=['DELETE'])
 def delete():
     """Delete a recipe (cocktail) and its ingredients."""
-    rezeptnr = request.args.get('id', type=int)
-    if rezeptnr is None:
+    cocktail_id = request.args.get('id', type=int)
+    if cocktail_id is None:
         return jsonify({"error": "Missing id parameter"}), 400
-    ge_rezept_db().deleteRezept(rezeptnr)
+    ge_rezept_db().deleteRezept(cocktail_id)
     return jsonify({"status": "deleted"})
