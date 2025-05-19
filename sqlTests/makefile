@@ -6,6 +6,7 @@ DB_USER=vscode
 DB_PASSWORD=Keins123!
 DB_NAME=BarbotDB
 SQL_DUMP=backup.sql
+SQL_TESTDATA=testdata.sql
 
 # List all tables you expect after import (space-separated)
 CHECK_TABLES=Cocktail Zapfstelle Zutat Rezept
@@ -24,7 +25,7 @@ help:
 	@echo "  make import-db  # Import SQL dump into MariaDB if not already imported"
 	@echo "  make logs       # Show logs for all containers"
 
-up: up-all import-db
+up: up-all import-db import_testdata
 	@echo "All services are up and database is initialized (if needed)."
 
 up-all:
@@ -60,6 +61,29 @@ import-db:
 			sh -c "mysql -h$(DB_SERVICE) -u$(DB_USER) -p$(DB_PASSWORD) $(DB_NAME) < /sql/$(SQL_DUMP)"; \
 		echo "Import complete."; \
 	fi
+
+import-testdata:
+	@echo "Checking if testdata import is needed..."
+	@missing=0; \
+	for table in $(CHECK_TABLES); do \
+		if ! docker compose -f $(COMPOSE_FILE) exec -T $(DB_SERVICE) \
+			mariadb -u$(DB_USER) -p$(DB_PASSWORD) -D$(DB_NAME) -e "SHOW TABLES LIKE '$$table';" | grep -q "$$table"; then \
+			echo "Table '$$table' is missing."; \
+			missing=1; \
+		fi; \
+	done; \
+	if [ $$missing -eq 0 ]; then \
+		echo "All tables exist. Importing testdata..."; \
+		docker run --rm \
+			--network $(DOCKER_NETWORK) \
+			-v $(PWD):/sql \
+			mariadb:latest \
+			sh -c "mysql -h$(DB_SERVICE) -u$(DB_USER) -p$(DB_PASSWORD) $(DB_NAME) < /sql/testdata.sql"; \
+		echo "Testdata import complete."; \
+	else \
+		echo "One or more tables are missing. Please create the schema first."; \
+	fi
+
 
 logs:
 	docker compose -f $(COMPOSE_FILE) logs -f
