@@ -5,15 +5,15 @@ INSERT INTO Zapfstelle (SchienenPos, Pumpe, PumpenNR) VALUES
   (3, 1, 103);
 
 -- Zutat
-INSERT INTO Zutat (Name, Zapfstelle) VALUES
-  ('Rum', 1),
-  ('Minze', 2),
-  ('Limette', 2),
-  ('Zucker', 3),
-  ('Soda', 1),
-  ('Cachaça', 1),
-  ('Gin', 1),
-  ('Tonic Water', 3);
+INSERT INTO Zutat (Name, Zapfstelle, Alkohol) VALUES
+  ('Rum', 1, true),
+  ('Minze', 2, false),
+  ('Limette', 2, false),
+  ('Zucker', 3, false),
+  ('Soda', 1, false),
+  ('Cachaça', 1, true),
+  ('Gin', 1, false),
+  ('Tonic Water', 3, true);
 
 -- Cocktail
 INSERT INTO Cocktail (Name, Beschreibung, LINK) VALUES
