@@ -9,33 +9,26 @@
     <h1>Alle Rezepte</h1>
     <div id="rezepte"></div>
     <script>
-        function fetchAllRezepte() {
-            fetch('/api/Rezept/getAll')
-                .then(res => res.json())
-                .then(data => {
-                    const container = document.getElementById('rezepte');
-                    if (!data.length) {
-                        container.textContent = "Keine Rezepte gefunden.";
-                        return;
-                    }
-                    let html = "<table><tr><th>ID</th><th>Name</th><th>Beschreibung</th><th>Zutaten</th><th>Zubereitung</th></tr>";
-                    data.forEach(row => {
-                        // If your API returns an object for each recipe:
-                        html += `<tr>
-                            <td>${row.ID || row.id || ''}</td>
-                            <td>${row.Name || ''}</td>
-                            <td>${row.Beschreibung || ''}</td>
-                            <td>${row.Zutaten || ''}</td>
-                            <td>${row.Zubereitung || ''}</td>
-                        </tr>`;
-                        // If your API returns arrays, use:
-                        // html += "<tr>" + row.map(cell => `<td>${cell}</td>`).join('') + "</tr>";
-                    });
-                    html += "</table>";
-                    container.innerHTML = html;
+        fetch('{{ url_for("rezeptAPI.get_all") }}')
+            .then(res => res.json())
+            .then(data => {
+                if (!data.length) {
+                    document.getElementById('rezepte').textContent = "Keine Rezepte gefunden.";
+                    return;
+                }
+                let html = "<table><tr><th>ID</th><th>Name</th><th>Beschreibung</th><th>Zubereitung</th><th>Zutaten</th></tr>";
+                data.forEach(rezept => {
+                    html += `<tr>
+                        <td>${rezept.ID}</td>
+                        <td>${rezept.Name}</td>
+                        <td>${rezept.Beschreibung}</td>
+                        <td>${rezept.Zubereitung}</td>
+                        <td><ul>${rezept.Zutaten.map(z => `<li>${z.Menge} ${z.ZutatName}</li>`).join('')}</ul></td>
+                    </tr>`;
                 });
-        }
-        fetchAllRezepte();
+                html += "</table>";
+                document.getElementById('rezepte').innerHTML = html;
+            });
     </script>
 </body>
 </html>
