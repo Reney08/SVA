@@ -3,23 +3,21 @@
 <head>
   <meta charset="UTF-8">
   <title>Rezept löschen</title>
-  <link rel="stylesheet" href="delete.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/delete.css') }}">
 </head>
 <body>
   <h1>Rezept löschen</h1>
-  <input type="number" id="deleteId" placeholder="Rezept-ID">
-  <button onclick="deleteRezept()">Löschen</button>
-  <div id="feedback"></div>
+  <form id="deleteForm">
+    <label for="deleteId">Rezept-ID eingeben:</label>
+    <input type="number" id="deleteId" required>
+    <button type="submit">Löschen</button>
+  </form>
+  <p id="status"></p>
 
   <script>
-    function deleteRezept() {
+    document.getElementById('deleteForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
       const id = document.getElementById('deleteId').value;
-      fetch(`/api/Rezept/delete?id=${id}`, { method: 'DELETE' })
-        .then(res => res.json())
-        .then(data => {
-          document.getElementById('feedback').innerText = JSON.stringify(data);
-        });
-    }
-  </script>
-</body>
-</html>
+      const res = await fetch(`/api/Rezept/delete?id=${id}`, { method: 'DELETE' });
+      const result = await res.json();
+      document.getElementById('status').innerText =
