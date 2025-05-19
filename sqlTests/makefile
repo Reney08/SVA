@@ -80,7 +80,7 @@ import-db: wait-db
 			--network $(DOCKER_NETWORK) \
 			-v $(PWD):/sql \
 			mariadb:latest \
-			sh -c "set -e; mysql -h$(DB_SERVICE) -u$(DB_USER) -p$(DB_PASSWORD) $(DB_NAME) < /sql/$(SQL_DUMP)"; \
+			sh -c "set -e; mariadb -h$(DB_SERVICE) -u$(DB_USER) -p$(DB_PASSWORD) $(DB_NAME) < /sql/$(SQL_DUMP)"; \
 		echo "Import complete."; \
 	fi
 
@@ -100,7 +100,7 @@ import-testdata: wait-db
 			--network $(DOCKER_NETWORK) \
 			-v $(PWD):/sql \
 			mariadb:latest \
-			sh -c "set -e; mysql -h$(DB_SERVICE) -u$(DB_USER) -p$(DB_PASSWORD) $(DB_NAME) < /sql/$(SQL_TESTDATA)"; \
+			sh -c "set -e; mariadb -h$(DB_SERVICE) -u$(DB_USER) -p$(DB_PASSWORD) $(DB_NAME) < /sql/$(SQL_TESTDATA)"; \
 		echo "Testdata import complete."; \
 	else \
 		echo "One or more tables are missing. Please create the schema first."; \
