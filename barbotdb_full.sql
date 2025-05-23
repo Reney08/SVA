@@ -34,7 +34,15 @@ CREATE TABLE IF NOT EXISTS Rezept (
     FOREIGN KEY (ZutatID) REFERENCES Zutat(ZutatID)
 );
 
--- Insert Zapfstelle data (positions and pumps)
+-- 1. Insert Cocktails (no dependencies)
+INSERT INTO Cocktail (Name, Beschreibung, ExtLink, Bild) VALUES
+('Vodka Sunrise', 'Vodka mit Orangensaft', 'https://example.com/vodka-sunrise', NULL),
+('Gin Tonic',     'Gin mit Tonic Water',   'https://example.com/gin-tonic', NULL),
+('Bacardi Cola',  'Bacardi mit Cola',      'https://example.com/bacardi-cola', NULL),
+('Tequila Fanta', 'Tequila mit Fanta',     'https://example.com/tequila-fanta', NULL),
+('Korn Sprite',   'Korn mit Sprite',       'https://example.com/korn-sprite', NULL);
+
+-- 2. Insert Zapfstelle (no dependencies)
 INSERT INTO Zapfstelle (SchienenPos, Pumpe, PumpenNR, Fuellmenge) VALUES
 (25,    0, NULL, 1000),   -- 1: Vodka (servo)
 (525,   0, NULL, 1000),   -- 2: Tequila (servo)
@@ -50,7 +58,7 @@ INSERT INTO Zapfstelle (SchienenPos, Pumpe, PumpenNR, Fuellmenge) VALUES
 (3025,  1, 5,    1000),   -- 12: Fanta (pump)
 (3025,  1, 6,    1000);   -- 13: Sprite (pump)
 
--- Insert Zutat data, referencing the correct ZapfstelleID (1-based)
+-- 3. Insert Zutat (references Zapfstelle)
 INSERT INTO Zutat (Zapfstelle, Name, Alkohol) VALUES
 (1,  'Vodka',        1),
 (2,  'Tequila',      1),
@@ -66,36 +74,15 @@ INSERT INTO Zutat (Zapfstelle, Name, Alkohol) VALUES
 (12, 'Fanta',        0),
 (13, 'Sprite',       0);
 
--- Insert example Cocktails
-INSERT INTO Cocktail (Name, Beschreibung, ExtLink, Bild) VALUES
-('Vodka Sunrise', 'Vodka mit Orangensaft', 'https://example.com/vodka-sunrise', NULL),
-('Gin Tonic',     'Gin mit Tonic Water',   'https://example.com/gin-tonic', NULL),
-('Bacardi Cola',  'Bacardi mit Cola',      'https://example.com/bacardi-cola', NULL),
-('Tequila Fanta', 'Tequila mit Fanta',     'https://example.com/tequila-fanta', NULL),
-('Korn Sprite',   'Korn mit Sprite',       'https://example.com/korn-sprite', NULL);
-
--- Insert Rezept data (CocktailID and ZutatID are 1-based and match above inserts)
--- Vodka Sunrise: Vodka + Orangensaft
+-- 4. Insert Rezept (references Cocktail and Zutat)
 INSERT INTO Rezept (CocktailID, ZutatID, RezeptPos, Menge) VALUES
-(1, 1, 1, 40),   -- Vodka
-(1, 8, 2, 100);  -- Orangensaft
-
--- Gin Tonic: Gin + Tonic Water
-INSERT INTO Rezept (CocktailID, ZutatID, RezeptPos, Menge) VALUES
-(2, 6, 1, 40),   -- Gin
-(2, 11, 2, 100); -- Tonic Water
-
--- Bacardi Cola: Bacardi + Cola
-INSERT INTO Rezept (CocktailID, ZutatID, RezeptPos, Menge) VALUES
-(3, 3, 1, 40),   -- Bacardi
-(3, 7, 2, 100);  -- Cola
-
--- Tequila Fanta: Tequila + Fanta
-INSERT INTO Rezept (CocktailID, ZutatID, RezeptPos, Menge) VALUES
-(4, 2, 1, 40),   -- Tequila
-(4, 12, 2, 100); -- Fanta
-
--- Korn Sprite: Korn + Sprite
-INSERT INTO Rezept (CocktailID, ZutatID, RezeptPos, Menge) VALUES
-(5, 5, 1, 40),   -- Korn
-(5, 13, 2, 100); -- Sprite
+(1, 1, 1, 40),   -- Vodka Sunrise: Vodka
+(1, 8, 2, 100),  -- Vodka Sunrise: Orangensaft
+(2, 6, 1, 40),   -- Gin Tonic: Gin
+(2, 11, 2, 100), -- Gin Tonic: Tonic Water
+(3, 3, 1, 40),   -- Bacardi Cola: Bacardi
+(3, 7, 2, 100),  -- Bacardi Cola: Cola
+(4, 2, 1, 40),   -- Tequila Fanta: Tequila
+(4, 12, 2, 100), -- Tequila Fanta: Fanta
+(5, 5, 1, 40),   -- Korn Sprite: Korn
+(5, 13, 2, 100); -- Korn Sprite: Sprite
