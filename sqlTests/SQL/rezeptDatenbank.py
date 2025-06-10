@@ -9,24 +9,11 @@ class RezeptDatenbank:
         if self.connector.conn is None:
             self.connector.connect()
         cur = self.connector.conn.cursor()
-        cur.execute("SELECT ZutatID, Name FROM Zutat")
+        cur.execute(
+            "SELECT ZutatID, Name FROM Zutat")
         result = [{"id": row[0], "name": row[1]} for row in cur.fetchall()]
         cur.close()
         return result
-
-    def addCocktail(self, Name: str, Beschreibung: str, ExtLink: str = None) -> int:
-        """Adds a new cocktail and returns its ID (CocktailID)."""
-        if self.connector.conn is None:
-            self.connector.connect()
-        cur = self.connector.conn.cursor()
-        cur.execute(
-            "INSERT INTO Cocktail (Name, Beschreibung, ExtLink) VALUES (?, ?, ?)",
-            (Name, Beschreibung, ExtLink)
-        )
-        self.connector.conn.commit()
-        cocktail_id = cur.lastrowid
-        cur.close()
-        return cocktail_id
 
     def addRezept(self, CocktailID: int, RezeptPos: int, ZutatID: int, Menge: float):
         """Adds a single ingredient to a recipe (Rezept table)."""

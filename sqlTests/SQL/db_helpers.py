@@ -26,7 +26,7 @@ def get_cocktail_db():
         g.cocktail_db = CocktailDatenbank(get_db())
     return g.cocktail_db
 
-def ge_rezept_db():
+def get_rezept_db():
     if 'rezept_db' not in g:
         g.rezept_db = RezeptDatenbank(get_db())
     return g.rezept_db

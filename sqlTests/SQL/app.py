@@ -14,6 +14,9 @@ app.register_blueprint(zapfstelle_api_bp)
 
 app.register_blueprint(rezept_bp)
 app.register_blueprint(rezept_api_bp)
+
+app.register_blueprint(cocktail_bp)
+add.register_blueprint(cocktail_api_bp)
 '''
 hier die beiden neuen blueprints registrieren
 '''
