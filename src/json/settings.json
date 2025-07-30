@@ -1,9 +1,9 @@
 {
-    "STEP": 17,
-    "DIR": 27,
-    "EN": 23,
-    "schalterLinksPin": 16,
-    "schalterRechtsPin": 24,
+    "STEP": 11,
+    "DIR": 14,
+    "EN": 16,
+    "schalterLinksPin": 36,
+    "schalterRechtsPin": 37,
     "us_delay": 950,
     "uS": 0.000001,
     "pulse_min": 150,
@@ -13,7 +13,7 @@
     "SCALE": 1,
     "time_constant": 0.25,
     "filtered": 0,
-    "clock_pin": 6,
-    "data_pin": 5,
+    "clock_pin": 5,
+    "data_pin": 3,
     "calibration_factor": -0.0009405187713438978
 }
