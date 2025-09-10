@@ -1,7 +1,7 @@
 {
-    "STEP": 16,
-    "DIR": 13,
-    "EN": 7,
+    "STEP": 17,
+    "DIR": 27,
+    "EN": 22,
     "schalterLinksPin": 36,
     "schalterRechtsPin": 37,
     "us_delay": 950,
