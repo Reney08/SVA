@@ -9,30 +9,35 @@ from helpers.executeSequence import ExecuteSequence
 from moveable.stepper import Stepper
 from moveable.servo import ServoMotor
 
+from pathlib import Path
 import json
 import glob
 import os
+import sys
+
+# Add src to Python path for imports
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
 # generates Flask app and defines routes for the cocktail mixing application. 
 # It loads pump and position configurations from JSON files, creates a sequence of steps to mix cocktails based on user-selected ingredients, and handles the execution of these steps. 
 # The app also includes routes for displaying the status of various components and a shutdown route.
+BASE_DIR = Path(__file__).resolve().parent
+JSON_DIR = BASE_DIR.parent / 'json'
+
 app = Flask(__name__,
-            template_folder='../frontend/templates',
-            static_folder='../frontend/static')
+            template_folder=str(BASE_DIR.parent / 'frontend' / 'templates'),
+            static_folder=str(BASE_DIR.parent / 'frontend' / 'static'))
 
 # Set a secret key for session management (in production, use a secure random key)
 app.secret_key = "test123"
 
 # Load pump configurations from JSON file
-with open("../json/pumps.json", "r") as file:
+with open(JSON_DIR / 'pumps.json', 'r') as file:
     pumps = json.load(file)
 
 # Load positions from JSON file
-with open("../json/positions.json") as file:
+with open(JSON_DIR / 'positions.json', 'r') as file:
     positions = json.load(file)
-
-# Initialize the stepper motor instance (if needed for global access)
-stepper_instance = Stepper()
 
 @app.route('/')
 def index():
@@ -46,7 +51,7 @@ def index():
             render_template: The rendered index template with the list of cocktails.
     """
     # List all cocktail JSON files and render the index page
-    cocktail_files = glob.glob('../json/cocktails/*.json')
+    cocktail_files = glob.glob(str(JSON_DIR / 'cocktails' / '*.json'))
     cocktails = [os.path.splitext(os.path.basename(file))[0] for file in cocktail_files]
     # stepper_instance.moveToStandartPos()
     # cocktails = db_handler.get_all_cocktails()
@@ -75,8 +80,8 @@ def selected_cocktail(selected_cocktail):
 
     # Load ingredients for the selected :
     # cocktail and render the page
-    ingredients_file = f'../json/cocktails/{selected_cocktail}.json'
-    if os.path.exists(ingredients_file):
+    ingredients_file = JSON_DIR / 'cocktails' / f'{selected_cocktail}.json'
+    if ingredients_file.exists():
         with open(ingredients_file) as f:
             ingredients = json.load(f)
             print("Loaded ingredients:", ingredients)

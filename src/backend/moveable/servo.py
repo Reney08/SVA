@@ -1,7 +1,10 @@
+from pathlib import Path
 from moveable.pcadevice import PCADevice
 
 import json
 import time
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 # ServoMotor Inheriting from PCADevice
@@ -23,7 +26,7 @@ class ServoMotor(PCADevice):
         """
         super().__init__(address, channel)
 
-        with open('../json/settings.json', 'r') as file:
+        with open(BASE_DIR / 'json' / 'settings.json', 'r') as file:
             self.settings = json.load(file)
 
         # Load movement limits from settings file

@@ -1,3 +1,4 @@
+from pathlib import Path
 from moveable.leds import LEDController
 
 # from .moveable import pump
@@ -11,6 +12,8 @@ from moveable.stepper import Stepper
 import json
 import time
 from unittest import case
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 # from src.backend.moveable import pump
@@ -108,7 +111,7 @@ class ExecuteSequence:
         Returns:
             dict: Dictionary containing the positions data.
         """
-        with open("../json/positions.json", 'r') as file:
+        with open(BASE_DIR / 'json' / 'positions.json', 'r') as file:
             return json.load(file)
 
     def load_pumps(self):
@@ -118,7 +121,7 @@ class ExecuteSequence:
         Returns:
             dict: Dictionary containing the pumps data.
         """
-        with open("../json/pumps.json", 'r') as file:
+        with open(BASE_DIR / 'json' / 'pumps.json', 'r') as file:
             return json.load(file)
 
     def get_position_for_liquid(self, positions, liquid):
