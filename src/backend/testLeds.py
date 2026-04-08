@@ -6,13 +6,18 @@ from moveable.leds import LEDController
 
 
 class TestAddressableRGBLEDs:
+    """
+    Test controller for addressable RGB LEDs with various animation and control options.
+    """
+
     def __init__(self, pin, num_leds=150, brightness=0.5):
         """
         Initialize the TestAddressableRGBLEDs instance.
 
-        :param pin: The GPIO pin to which the LED strip is connected.
-        :param num_leds: The number of LEDs in the strip.
-        :param brightness: The brightness level of the LEDs (0.0 to 1.0).
+        Args:
+            pin: GPIO pin to which the LED strip is connected.
+            num_leds (int): Number of LEDs in the strip.
+            brightness (float): Brightness level of the LEDs (0.0 to 1.0).
         """
         # Initialization (unchanged)
         self.num_leds = num_leds
@@ -39,6 +44,10 @@ class TestAddressableRGBLEDs:
     def display_rainbow(self, speed=0.05, direction="left_to_right"):
         """
         Display a rainbow animation on the LED strip.
+
+        Args:
+            speed (float): Animation speed (delay between frames in seconds).
+            direction (str): Animation direction ('left_to_right' or 'right_to_left').
         """
         try:
             while True:
@@ -84,6 +93,12 @@ class TestAddressableRGBLEDs:
     def _color_wheel(self, pos):
         """
         Generate a color from a rainbow wheel.
+
+        Args:
+            pos (int): Position on the color wheel (0-255).
+
+        Returns:
+            tuple: RGB color tuple (R, G, B).
         """
         if pos < 85:
             return int(pos * 3), int(255 - (pos * 3)), 0
@@ -98,9 +113,10 @@ class TestAddressableRGBLEDs:
         """
         Set all LEDs to a given color.
 
-        :param r: value for red (0-255)
-        :param g: value for green (0-255)
-        :param b: value for blue (0-255)
+        Args:
+            r (int): Red value (0-255).
+            g (int): Green value (0-255).
+            b (int): Blue value (0-255).
         """
         # Konvertiere Werte auf die Helligkeitsskala, falls nÃ¶tig
         scaled_color = (int(r * self.brightness), int(g * self.brightness), int(b * self.brightness))
@@ -113,8 +129,9 @@ class TestAddressableRGBLEDs:
         """
         Set specific LEDs to a given color.
 
-        :param leds: A list of LED indices or a single index (int) to set.
-        :param color: A tuple representing the RGB color (R, G, B).
+        Args:
+            leds (int or list): Single LED index or list of LED indices.
+            color (tuple): RGB color tuple (R, G, B).
         """
         if isinstance(leds, int):  # If a single LED index is passed
             leds = [leds]
@@ -132,11 +149,13 @@ class TestAddressableRGBLEDs:
 
     def set_led_range(self, start, end, color):
         """
-           Set a range of LEDs to a given color.
-           :param start: Starting index of the range (inclusive).
-           :param end: Ending index of the range (inclusive).
-           :param color: A tuple representing the RGB color (R, G, B).
-           """
+        Set a range of LEDs to a given color.
+
+        Args:
+            start (int): Starting index of the range (inclusive).
+            end (int): Ending index of the range (inclusive).
+            color (tuple): RGB color tuple (R, G, B).
+        """
         for led in range(start, end + 1):  # Include the end index
             if 0 <= led < len(self.pixels):  # Check if index is valid
                 self.pixels[led] = color
