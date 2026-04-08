@@ -1,9 +1,37 @@
 import json
 from dictionaries.led_mapping import led_mapping
 
+try:
+    import board
+    import neopixel
 
-import neopixel
-import board
+    # Prüfen, ob NeoPixel wirklich existiert
+    if not hasattr(neopixel, "NeoPixel"):
+        raise ImportError("Invalid neopixel module")
+
+except (ImportError, RuntimeError):
+    board = None
+
+    class MockNeoPixel:
+        def __init__(self, pin, num_leds, auto_write=False, brightness=1.0, pixel_order=None):
+            self.leds = [(0, 0, 0)] * num_leds
+
+        def __setitem__(self, index, value):
+            if isinstance(index, int) and 0 <= index < len(self.leds):
+                self.leds[index] = value
+
+        def show(self):
+            pass
+
+        def fill(self, color):
+            self.leds = [color] * len(self.leds)
+
+    class neopixel:
+        GRB = None
+        NeoPixel = MockNeoPixel
+
+from pathlib import Path
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 class LEDController:
@@ -14,7 +42,7 @@ class LEDController:
     using mappings from led_mapping.py and positions.json.
     """
 
-    def __init__(self, pin=18, num_leds=150, brightness=0.5, position_file="../json/positions.json"):
+    def __init__(self, pin=18, num_leds=150, brightness=0.5, position_file=None):
         """
         Initialize the LED controller.
 
@@ -34,6 +62,8 @@ class LEDController:
         self.led_mapping = led_mapping  # LED-to-position mapping from `led_mapping.py`
         # print("LED Mapping Loaded:", self.led_mapping)  # Debug statement to print the mapping
 
+        if position_file is None:
+            position_file = str(BASE_DIR / 'json' / 'positions.json')
 
         self.positions = self.load_positions(position_file)  # Load step mappings from JSON
 
