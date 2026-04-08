@@ -7,16 +7,23 @@ import board
 
 
 class LEDController:
-    def __init__(self, pin=board.D18, num_leds=150, brightness=0.5, position_file="../json/positions.json"):
-        """
-        Initialize the LED controller using NeoPixel and load position/step mappings.
+    """
+    Controller for NeoPixel LED strips used to indicate positions and actions.
 
-        :param pin: GPIO pin controlling the LED strip (default: GPIO18).
-        :param num_leds: Total number of LEDs in the strip.
-        :param brightness: Brightness value for the LEDs (0.0 to 1.0).
-        :param position_file: JSON file containing position definitions.
-        """
+    This class manages LED activation based on positions and steps,
+    using mappings from led_mapping.py and positions.json.
+    """
 
+    def __init__(self, pin=18, num_leds=150, brightness=0.5, position_file="../json/positions.json"):
+        """
+        Initialize the LED controller.
+
+        Args:
+            pin (int): GPIO pin controlling the LED strip (default: 18).
+            num_leds (int): Total number of LEDs in the strip.
+            brightness (float): Brightness value for the LEDs (0.0 to 1.0).
+            position_file (str): Path to the JSON file containing position definitions.
+        """
         self.pixels = neopixel.NeoPixel(
             pin,
             num_leds,
@@ -32,9 +39,13 @@ class LEDController:
 
     def load_positions(self, position_file):
         """
-        Load positions (steps, liquid names, etc.) from a JSON file.
-        :param position_file: The path to the JSON file.
-        :return: A dictionary with position data.
+        Load positions from a JSON file.
+
+        Args:
+            position_file (str): Path to the JSON file.
+
+        Returns:
+            dict: Dictionary with position data, or empty dict on error.
         """
         try:
             with open(position_file, "r") as file:
@@ -48,9 +59,13 @@ class LEDController:
 
     def get_position_by_steps(self, steps):
         """
-        Get the position name that corresponds to the given step value.
-        :param steps: The step value to map.
-        :return: A position name (e.g., "Pos1").
+        Get the position name corresponding to the given step value.
+
+        Args:
+            steps (int): The step value to map.
+
+        Returns:
+            str or None: Position name (e.g., "Pos1") or None if not found.
         """
         for position, details in self.positions.items():
             if details.get("steps") == steps:
@@ -60,9 +75,11 @@ class LEDController:
 
     def activate_leds_for_position(self, position, color):
         """
-        Activate LEDs corresponding to a specific position (e.g., "Pos1").
-        :param position: The position to activate (e.g., "Pos1", "Pos2").
-        :param color: A tuple representing the RGB color (R, G, B).
+        Activate LEDs for a specific position.
+
+        Args:
+            position (str): Position to activate (e.g., "Pos1").
+            color (tuple): RGB color tuple (R, G, B).
         """
         if position in self.led_mapping:
             # Get the list of top-row and bottom-row LEDs for the position
@@ -79,9 +96,11 @@ class LEDController:
 
     def activate_leds_by_step(self, steps, color):
         """
-        Activate LEDs based on step value by first determining the position.
-        :param steps: The step value.
-        :param color: A tuple representing the RGB color (R, G, B).
+        Activate LEDs based on step value.
+
+        Args:
+            steps (int): Step value to determine position.
+            color (tuple): RGB color tuple (R, G, B).
         """
         position = self.get_position_by_steps(steps)
         if position:
@@ -99,10 +118,11 @@ class LEDController:
 
     def activate_leds_by_position(self, position, color):
         """
-        Activate LEDs corresponding to a specific position (e.g., "Pos1").
-        Uses `positions.json` for validation and `led_mapping` for LED indices.
+        Activate LEDs for a specific position using mappings.
 
-        :param position: The position to activate (e.g., "Pos1", "Pos2").
+        Args:
+            position (str): Position to activate (e.g., "Pos1").
+            color (tuple): RGB color tuple (R, G, B).
         """
         if position in self.positions:
             # Check if position exists in led_mapping
@@ -126,7 +146,10 @@ class LEDController:
 
     def print_led_mapping(self):
         """
-        Prints the LED-to-position mapping stored in self.led_mapping.
+        Print the LED-to-position mapping.
+
+        Returns:
+            None
         """
         print("LED Mapping:", self.led_mapping)
 

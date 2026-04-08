@@ -7,6 +7,13 @@ from moveable.leds import LEDController
 
 class TestAddressableRGBLEDs:
     def __init__(self, pin, num_leds=150, brightness=0.5):
+        """
+        Initialize the TestAddressableRGBLEDs instance.
+
+        :param pin: The GPIO pin to which the LED strip is connected.
+        :param num_leds: The number of LEDs in the strip.
+        :param brightness: The brightness level of the LEDs (0.0 to 1.0).
+        """
         # Initialization (unchanged)
         self.num_leds = num_leds
         self.num_leds_per_row = num_leds // 2
@@ -51,27 +58,27 @@ class TestAddressableRGBLEDs:
 
     def run_color_loop(self):
         """
-        LÃ¤sst den Benutzer eine Farbe auswÃ¤hlen und wendet sie dynamisch auf die LEDs an.
-        Die Schleife lÃ¤uft, bis der Benutzer `Ctrl + C` drÃ¼ckt.
+        Allows the user to select a color and applies it dynamically to the LEDs.
+        The loop runs until the user presses `Ctrl + C`.
         """
-        print("DrÃ¼cke Strg+C, um das Programm zu beenden.")
-        print("Gib die neue Farbe als RGB-Werte (z. B. '255 0 0' fÃ¼r Rot) ein.")
+        print("Press Ctrl+C to exit the program.")
+        print("Enter the new color as RGB values (e.g., '255 0 0' for red).")
 
         try:
             while True:
-                user_input = input("Neue Farbe (RGB-Werte): ")
+                user_input = input("New color (RGB values): ")
                 try:
                     r, g, b = map(int, user_input.split())
                     if 0 <= r <= 255 and 0 <= g <= 255 and 0 <= b <= 255:
                         self.set_color(r, g, b)
                         self.pixels.show()
-                        print(f"Neue Farbe auf R:{r}, G:{g}, B:{b} gesetzt.")
+                        print(f"New color set to R:{r}, G:{g}, B:{b}.")
                     else:
-                        print("RGB-Werte mÃ¼ssen zwischen 0 und 255 liegen.")
+                        print("RGB values must be between 0 and 255.")
                 except ValueError:
-                    print("UngÃ¼ltige Eingabe. Bitte gib drei Zahlen ein, getrennt durch Leerzeichen.")
+                    print("Invalid input. Please enter three numbers separated by spaces.")
         except KeyboardInterrupt:
-            print("\nProgramm beendet. LEDs werden ausgeschaltet.")
+            print("\nProgram terminated. LEDs will be turned off.")
             self.clear()
 
     def _color_wheel(self, pos):
@@ -89,11 +96,11 @@ class TestAddressableRGBLEDs:
 
     def set_color(self, r, g, b):
         """
-        Setzt alle LEDs auf eine bestimmte Farbe.
+        Set all LEDs to a given color.
 
-        :param r: Rot-Wert (0-255)
-        :param g: GrÃ¼n-Wert (0-255)
-        :param b: Blau-Wert (0-255)
+        :param r: value for red (0-255)
+        :param g: value for green (0-255)
+        :param b: value for blue (0-255)
         """
         # Konvertiere Werte auf die Helligkeitsskala, falls nÃ¶tig
         scaled_color = (int(r * self.brightness), int(g * self.brightness), int(b * self.brightness))

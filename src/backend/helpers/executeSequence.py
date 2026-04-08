@@ -17,8 +17,20 @@ from unittest import case
 
 
 class ExecuteSequence:
+    """
+    Executes a sequence of mixing steps for a cocktail machine.
+
+    The class loads pump and position data, initializes hardware controllers,
+    and processes steps to move the stepper, activate the servo, and control LEDs.
+    """
 
     def __init__(self, sequence):
+        """
+        Initialize the ExecuteSequence instance.
+
+        Args:
+            sequence (list): The cocktail mixing sequence to execute.
+        """
         self.exec_sequence = sequence
         self.positions = self.load_position()
         self.pumps = self.load_pumps()
@@ -32,6 +44,14 @@ class ExecuteSequence:
         
 
     def execute_sequence(self, exec_sequence):
+        """
+        Execute a series of steps to mix the cocktail.
+        The method moves the stepper to the correct positions, activates the pump or servo,
+        updates LEDs for visual feedback, and returns the stepper to the standard position.
+        
+        Args:
+            exec_sequence (list): List of step dictionaries describing pump and servo actions.
+        """
         self.stepper.moveToStandartPos()
         self.servo.move_to_waiting()
         for step in exec_sequence:
@@ -81,6 +101,7 @@ class ExecuteSequence:
     def load_position(self):
         """
         Loads the positions JSON file into a dictionary.
+        
         Args:
             filepath (str): Path to the positions.json file.
 

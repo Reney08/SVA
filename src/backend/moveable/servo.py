@@ -6,11 +6,20 @@ import time
 
 # ServoMotor Inheriting from PCADevice
 class ServoMotor(PCADevice):
+    """
+    A servo motor controller that inherits from PCADevice.
+
+    This class manages servo motor positions for dispensing liquids,
+    with predefined active, inactive, and waiting positions.
+    """
+
     def __init__(self, address, channel):
         """
-        Servo motor controlled via PCA9685.
-        :param address: I2C address of PCA board
-        :param channel: Channel number (0-15)
+        Initialize the ServoMotor with I2C address and channel.
+
+        Args:
+            address: I2C address of the PCA board.
+            channel: Channel number (0-15) on the PCA board.
         """
         super().__init__(address, channel)
 
@@ -36,7 +45,12 @@ class ServoMotor(PCADevice):
     def load_pulse_limits(self, settings_path='../json/settings.json'):
         """
         Load pulse_min and pulse_max values from the settings JSON file.
-        If the file or the required fields are missing, default values are used.
+
+        Args:
+            settings_path (str): Path to the settings JSON file. Defaults to '../json/settings.json'.
+
+        Returns:
+            tuple: A tuple of (pulse_min, pulse_max) values.
         """
         try:
             with open(settings_path, 'r') as file:
@@ -54,6 +68,10 @@ class ServoMotor(PCADevice):
         return 150, 600
 
     def activate(self):
+        """
+        Move the servo to the active position for dispensing.
+        """
+        
         """Move servo to the active position.
         self.pca.set_pwm(self.channel, 0, self.active_pos)
         time.sleep(1)
@@ -62,6 +80,10 @@ class ServoMotor(PCADevice):
         print(self.current_position)
 
     def deactivate(self):
+        """
+        Move the servo to the inactive position.
+        """
+        
         """Move servo to the inactive position.
         self.pca.set_pwm(self.channel, 0, self.inactive_pos)
         time.sleep(1)
@@ -70,6 +92,10 @@ class ServoMotor(PCADevice):
         print(self.current_position)
 
     def move_to_waiting(self):
+        """
+        Move the servo to the waiting position.
+        """
+        
         """Move the servo to a waiting position.
         self.pca.set_pwm(self.channel, 0, self.waiting_pos)
         time.sleep(1)
@@ -78,10 +104,19 @@ class ServoMotor(PCADevice):
         print(self.current_position)
 
     def get_status(self):
-        """Return the current position of the servo."""
+        """
+        Get the current position of the servo.
+
+        Returns:
+            dict: A dictionary with the key 'current_position' indicating the servo's state.
+        """
         return {'current_position': self.current_position}
 
     def shutdown(self):
+        """
+        Shut down the servo by moving to inactive position and turning off the PWM signal.
+        """
+        
         """Shutdown the servo by moving it to inactive and turning off the PWM signal.
         self.deactivate()  # Ensure the servo is in the inactive position
         self.pca.set_pwm(self.channel, 0, 0)  # Turn off the PWM signal

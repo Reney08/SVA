@@ -1,3 +1,9 @@
+# app.py
+
+# imports needed libraries and modules, 
+# sets up the Flask application, 
+# defines routes for the cocktail mixing application, 
+# and includes functions for creating a cocktail mixing sequence and checking if the app is running on a Raspberry Pi.
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session
 from helpers.executeSequence import ExecuteSequence
 from moveable.stepper import Stepper
@@ -7,21 +13,38 @@ import json
 import glob
 import os
 
+# generates Flask app and defines routes for the cocktail mixing application. 
+# It loads pump and position configurations from JSON files, creates a sequence of steps to mix cocktails based on user-selected ingredients, and handles the execution of these steps. 
+# The app also includes routes for displaying the status of various components and a shutdown route.
 app = Flask(__name__,
             template_folder='../frontend/templates',
             static_folder='../frontend/static')
+
+# Set a secret key for session management (in production, use a secure random key)
 app.secret_key = "test123"
 
+# Load pump configurations from JSON file
 with open("../json/pumps.json", "r") as file:
     pumps = json.load(file)
 
+# Load positions from JSON file
 with open("../json/positions.json") as file:
     positions = json.load(file)
 
+# Initialize the stepper motor instance (if needed for global access)
 stepper_instance = Stepper()
 
 @app.route('/')
 def index():
+    """
+        Renders the index page displaying a list of available cocktails.
+
+        Retrieves all cocktail JSON files from the cocktails directory,
+        extracts the cocktail names, and passes them to the index template.
+        
+        Returns:
+            render_template: The rendered index template with the list of cocktails.
+    """
     # List all cocktail JSON files and render the index page
     cocktail_files = glob.glob('../json/cocktails/*.json')
     cocktails = [os.path.splitext(os.path.basename(file))[0] for file in cocktail_files]
@@ -33,6 +56,20 @@ def index():
 
 @app.route('/<selected_cocktail>')
 def selected_cocktail(selected_cocktail):
+    """
+        Loads the ingredients for the selected cocktail and renders the selected cocktail page.
+
+        Checks if the cocktail file exists, loads the ingredients from the JSON file,
+        stores them in the session, and renders the template with the cocktail details.
+        If the file doesn't exist, uses an empty ingredients dict.
+        
+        Args:
+            selected_cocktail (str): The name of the selected cocktail, extracted from the URL.
+        
+        Returns:
+            render_template: The rendered template for the selected cocktail, including the cocktail name and ingredients.
+    
+    """
     if selected_cocktail == "favicon.ico":
         return "Not a valid cocktail", 404
 
@@ -61,6 +98,17 @@ def selected_cocktail(selected_cocktail):
 
 @app.route('/start_mixing', methods=["GET", "POST"])
 def start_mixing():
+    """
+        Initiates the cocktail mixing process for the ingredients stored in the session.
+
+        Retrieves ingredients from the session, creates a mixing sequence,
+        executes the sequence, and redirects back to the index page.
+        If no ingredients are found in the session, returns an error message.
+
+        Returns: 
+            redirect: Redirects to the index page after starting the mixing process.
+            str: An error message if no ingredients are found in the session.
+    """
     if 'ingredients' in session:
         ingredients = session['ingredients']
         print("Ingredients", ingredients)
@@ -75,57 +123,118 @@ def start_mixing():
 
 @app.route('/status')
 def status():
+    """
+        Renders the status page of the application.
+        
+        Returns:
+            render_template: The rendered status template.
+    """
     return render_template("status.html")
 
 
 @app.route("/stepper/status")
 def stepper_status():
+    """
+        Renders the stepper motor status page.
+        
+        Returns:
+            render_template: The rendered stepper status template.
+    """
     return render_template("stepper_status.html")
 
 
 @app.route("/stepper/move")
 def stepper_move():
+    """
+        Placeholder route for moving the stepper motor.
+        Currently returns a static string response.
+        
+        Returns: 
+            str: A message indicating that the stepper motor is moving.
+    """
     return "stepper move"
 
 
 @app.route("/servo/status")
 def servo_status():
+    """
+        Renders the servo motor status page.
+        
+        Returns: 
+            render_template: The rendered servo status template.
+    """
     return render_template("servo_status.html")
 
 
 @app.route("/servo/move")
 def servo_move():
+    """
+        Placeholder route for moving the servo motor.
+        Currently returns a static string response.
+        
+        Returns: 
+            str: A message indicating that the servo motor is moving.
+    """
     return "servo move"
 
 
 @app.route("/scale/status")
 def scale_status():
+    """
+        Renders the scale status page.
+        
+        Returns: 
+            render_template: The rendered scale status template.
+    """
     return render_template("scale_status.html")
 
 
 @app.route("/scale/weight")
 def scale_weight():
+    """
+        Placeholder route for retrieving the scale weight.
+        Currently returns a static string response.
+        
+        Returns: 
+            str: A message indicating the current weight on the scale.
+    """
     return "scale weight"
 
 
 @app.route('/pump')
 def pump_status():
+    """
+        Renders the pump status page.
+        Returns: 
+            render_template: The rendered pump status template.
+    
+    """
     return render_template("pump.html")
 
 
 @app.route("/shutdown")
 def shutdown():
+    """
+        Placeholder route for shutting down the system.
+        Currently returns a static string response.
+        
+        Returns:
+            str: A message indicating that the system is shutting down.
+    """
     return "shut system down"
 
 def create_cocktail_sequence(ingredients, pumps, positions, initial_weight=0):
     """
-    Generate a sequence of steps to mix a cocktail based on the given ingredients.
+        Generate a sequence of steps to mix a cocktail based on the given ingredients.
 
-    :param ingredients: Dict of required cocktail ingredients (liquid names and amounts in ml).
-    :param pumps: Dict of pumps and their respective liquids and channels.
-    :param positions: Dict of positions, their uses (servo or pump), and step coordinates.
-    :param initial_weight: Initial weight of the drink container.
-    :return: A list of steps to make the cocktail.
+        Args:
+            ingredients (dict): Dict of required cocktail ingredients (liquid names and amounts in ml).
+            pumps (dict): Dict of pumps and their respective liquids and channels.
+            positions (dict): Dict of positions, their uses (servo or pump), and step coordinates.
+            initial_weight (float): Initial weight of the drink container.
+
+        Returns: 
+            list: A list of steps to make the cocktail.
     """
     sequence = []
 
@@ -224,6 +333,22 @@ def make_all_lowercase(data):
     else:  # If data is any other type (e.g., int, float), we leave it as is
         return data
 
+def is_raspberry_pi():
+    """
+        Checks if the application is running on a Raspberry Pi.
+
+        Reads the /proc/cpuinfo file to look for 'Raspberry Pi' in the content.
+        Returns True if found, False otherwise or if the file is not accessible.
+        
+        Returns:
+            bool: True if running on Raspberry Pi, False otherwise.
+    """
+    # Check for Raspberry Pi specific files or hardware identifiers
+    try:
+        with open('/proc/cpuinfo', 'r') as f:
+            return "Raspberry Pi" in f.read()
+    except FileNotFoundError:
+        return False
 
 """
 def print_sequence(sequence):
@@ -247,15 +372,23 @@ def print_sequence(sequence):
 
 """
 
+# main entry point to run the Flask application. 
+# It checks if the app is running on a Raspberry Pi and initializes the stepper and servo motors accordingly. 
+# If not running on a Raspberry Pi, it simply runs the app in development mode without hardware access.
 if __name__ == '__main__':
-    stepper = Stepper()
-    stepper.gpioSetup()
-    stepper.stepperInit()
+    if is_raspberry_pi():
+        stepper = Stepper()
+        stepper.gpioSetup()
+        stepper.stepperInit()
 
-    servo = ServoMotor(address=0x41, channel=0)
-    servo.deactivate()
+        servo = ServoMotor(address=0x41, channel=0)
+        servo.deactivate()
 
+        print("✅ Running on Raspberry Pi")
+    else:
+        print("💻 Running in development mode (no hardware)")
 
     app.run(debug=False)
+
 
 

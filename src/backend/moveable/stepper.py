@@ -8,11 +8,20 @@ class Stepper:
     instance = None
 
     def __new__(cls):
+        """
+        Create a singleton instance of the Stepper class.
+        """
         if cls.instance is None:
             cls.instance = super().__new__(cls)
         return cls.instance
 
     def __init__(self):
+        """
+        Initialize the Stepper motor with settings and positions.
+
+        Loads configuration from settings.json and positions.json,
+        sets up GPIO pins, and initializes position tracking.
+        """
         # Initialize the StepperMotor with logger, GPIO configuration, and file handlers
         with open('../json/settings.json', 'r') as file:
             self.settings = json.load(file)
@@ -55,6 +64,9 @@ class Stepper:
     '''
 
     def gpioSetup(self):
+        """
+        Configure GPIO pins for the stepper motor control.
+        """
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         GPIO.setup(self.STEP, GPIO.OUT)
@@ -66,6 +78,9 @@ class Stepper:
 
             
     def stepperInit(self):
+        """
+        Initialize the stepper motor by moving to the left limit and resetting position.
+        """
         print(f"aktuellePos: {self.aktuellePos}")
         self.move_to_left_limit()
         
@@ -78,17 +93,32 @@ class Stepper:
 
 
     def getSchalterRechtsStatus(self):
+        """
+        Get the status of the right limit switch.
+
+        Returns:
+            int: The GPIO input value (0 or 1).
+        """
         print(self.schalterRechtsPin)
         return GPIO.input(self.schalterRechtsPin)
         # return 0
 
     def getSchalterLinksStatus(self):
+        """
+        Get the status of the left limit switch.
+
+        Returns:
+            int: The GPIO input value (0 or 1).
+        """
         print(self.schalterLinksPin)
         return GPIO.input(self.schalterLinksPin)
         # print(self.schalterLinksPin)
         # return 0
 
     def moveLeft(self):
+        """
+        Move the stepper motor one step to the left and update the current position.
+        """
         print("move left")
         GPIO.output(self.STEP, GPIO.HIGH)
         time.sleep(self.wait)
@@ -100,6 +130,9 @@ class Stepper:
         print(f"aktuellePos: {self.aktuellePos}")
 
     def moveRight(self):
+        """
+        Move the stepper motor one step to the right and update the current position.
+        """
         print("move right")
         GPIO.output(self.STEP, GPIO.LOW)
         time.sleep(self.wait)
@@ -111,6 +144,12 @@ class Stepper:
         print(f"aktuellePos: {self.aktuellePos}")
 
     def move(self, targetPos):
+        """
+        Move the stepper motor to the specified target position.
+
+        Args:
+            targetPos (int): The target position in steps.
+        """
         print(f"targetPos: {targetPos}")
         calculatedSteps = self.calculateStepsToNextPos(targetPos)
         print(f"calculatedSteps: {calculatedSteps}")
@@ -129,12 +168,24 @@ class Stepper:
 
 
     def calculateStepsToNextPos(self, targetPos):
+        """
+        Calculate the number of steps needed to reach the target position.
+
+        Args:
+            targetPos (int): The target position in steps.
+
+        Returns:
+            int: The number of steps to move (positive for right, negative for left).
+        """
         currentPos = self.aktuellePos
         calculatedSteps = targetPos - currentPos
         print(f"calculatedSteps: {calculatedSteps}")
         return calculatedSteps
 
     def moveToStandartPos(self):
+        """
+        Move the stepper motor to the standard position as defined in positions.json.
+        """
         with open("../json/positions.json", 'r') as file:
             settings = json.load(file)
             standartPos = settings.get('standartPos', {})

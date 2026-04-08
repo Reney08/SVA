@@ -1,8 +1,18 @@
+"""Helper utilities for analyzing and extracting data from cocktail mixing sequences.
+
+This module provides functions to inspect individual steps in a mixing sequence and
+retrieve common attributes such as step number, action, liquid, amount, and timing.
+"""
+
 def process_mixing_sequence(sequence):
     """
     Processes a mixing sequence step-by-step, extracting key variables for pumps and servos.
 
-    :param sequence: List of steps in the mixing sequence.
+    Args:
+        sequence (list): List of steps in the mixing sequence.
+
+    Returns:
+        None: This function prints extracted information for each step.
     """
     for step_index, step in enumerate(sequence, start=1):
         # Extract and store variables for the current step.
@@ -41,6 +51,7 @@ def process_mixing_sequence(sequence):
 def get_step_number(step):
     """
     Retrieves the step number from the provided step dictionary.
+    
     Args:
         step (dict): A dictionary containing details of a step, including the "step_number" key.
 
@@ -53,6 +64,7 @@ def get_step_number(step):
 def get_step_action(step):
     """
     Retrieves the action to be performed in the given step.
+    
     Args:
         step (dict): A dictionary containing details of a step, including the "action" key.
     Returns:
@@ -64,8 +76,10 @@ def get_step_action(step):
 def get_liquid(step):
     """
     Retrieves the liquid type associated with the given step.
+    
     Args:
         step (dict): A dictionary containing details of a step, with the "liquid" key located in "details".
+    
     Returns:
         str: The name or identifier of the liquid.
     """
@@ -75,8 +89,10 @@ def get_liquid(step):
 def get_amount(step):
     """
     Retrieves the amount of liquid or material required for the step.
+    
     Args:
         step (dict): A dictionary containing details of a step, with the "amount" key located in "details".
+    
     Returns:
         int or float: The required amount of liquid or material for the step.
     """
@@ -86,8 +102,10 @@ def get_amount(step):
 def get_weight_target(step):
     """
     Retrieves the weight target for the given step.
+    
     Args:
         step (dict): A dictionary containing details of a step, with the "weight_target" key located in "details".
+    
     Returns:
         float: The target weight for the step.
     """
@@ -97,8 +115,10 @@ def get_weight_target(step):
 def get_pwm_channel(step):
     """
     Retrieves the PWM channel required for the step.
+    
     Args:
         step (dict): A dictionary containing details of a step, with the "pwm_channel" key located in "details".
+    
     Returns:
         int: The PWM channel number to be used for the step.
     """
@@ -108,8 +128,10 @@ def get_pwm_channel(step):
 def get_time_delay(step):
     """
     Retrieves the time delay specified for the step.
+    
     Args:
         step (dict): A dictionary containing details of a step, with a "time_delay" key.
+    
     Returns:
         float: The time delay (in seconds or another unit) for the step.
     """
