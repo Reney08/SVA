@@ -1,6 +1,41 @@
-import RPi.GPIO as GPIO
+from pathlib import Path
 import time
 import json
+
+try:
+    import RPi.GPIO as GPIO
+except (ImportError, RuntimeError):
+    class MockGPIO:
+        BCM = 'BCM'
+        OUT = 'OUT'
+        IN = 'IN'
+        LOW = 0
+        HIGH = 1
+        PUD_UP = 'PUD_UP'
+
+        @staticmethod
+        def setmode(mode):
+            print(f"MockGPIO.setmode({mode})")
+
+        @staticmethod
+        def setwarnings(flag):
+            pass
+
+        @staticmethod
+        def setup(pin, mode, pull_up_down=None):
+            pass
+
+        @staticmethod
+        def output(pin, value):
+            pass
+
+        @staticmethod
+        def input(pin):
+            return 1
+
+    GPIO = MockGPIO()
+
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 
 class Stepper:
@@ -23,7 +58,7 @@ class Stepper:
         sets up GPIO pins, and initializes position tracking.
         """
         # Initialize the StepperMotor with logger, GPIO configuration, and file handlers
-        with open('../json/settings.json', 'r') as file:
+        with open(BASE_DIR / 'json' / 'settings.json', 'r') as file:
             self.settings = json.load(file)
 
         # Load GPIO configurations
@@ -40,7 +75,7 @@ class Stepper:
         # GPIO setup
         self.gpioSetup()
         # Load positions from positions.json
-        with open('../json/positions.json', 'r') as file:
+        with open(BASE_DIR / 'json' / 'positions.json', 'r') as file:
             self.positions = json.load(file)
 
         # Initialize position tracking
@@ -186,7 +221,7 @@ class Stepper:
         """
         Move the stepper motor to the standard position as defined in positions.json.
         """
-        with open("../json/positions.json", 'r') as file:
+        with open(BASE_DIR / 'json' / 'positions.json', 'r') as file:
             settings = json.load(file)
             standartPos = settings.get('standartPos', {})
             steps = standartPos.get('steps', 5000)
